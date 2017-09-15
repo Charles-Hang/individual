@@ -1,0 +1,49 @@
+.tags-wrapper {
+	padding: 40px;
+	padding-top: 80px;
+	margin-bottom: 40px;
+	background: #fff;
+	min-height: 718px;
+}
+
+.title {
+	text-align: center;
+}
+
+.tags-box {
+	display: flex;
+	margin-top: 40px;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.tag {
+	min-width: 80px;
+	height: 40px;
+	text-align: right;
+	font-size: 14px;
+	padding: 10px;
+	padding-left: 20px;
+	line-height: 18px;
+	margin: 10px;
+	background: #f5f7f9;
+	cursor: pointer;
+	border-radius: 90% 10% 10% 90% / 20px 15px 15px 20px;
+	position: relative;
+}
+
+.tag:hover {
+	color: #fff;
+	background-image: linear-gradient(110deg,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6);
+}
+
+.tag:after {
+	content: '';
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #fff;
+	position: absolute;
+	top: 17px;
+	left: 8px;
+}

@@ -1,0 +1,33 @@
+.colors li {
+	width: 100px;
+	height: 100px;
+	display: inline-block;
+}
+
+.colors li:global.color1 {
+	background: #18232f;
+}
+
+.colors li:global.color2 {
+	background: #1abc9c; 
+}
+
+.colors li:global.color3 {
+	background: #9b59b6;
+}
+
+.colors li:global.color4 {
+	background: #5bc0de; 
+}
+
+.colors li:global.color5 {
+	background: #f0ad4e;
+}
+
+.colors li:global.color6 {
+	background: #e74c3c;
+}
+
+.colors li:global.color7 {
+	background: #34495e;
+}
