@@ -1,0 +1,19 @@
+.nav {
+	height: 80px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	background: linear-gradient(135deg, #18232f,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6,#34495e);
+}
+
+.nav button {
+    border: 0;
+    background: #565656;
+    color: #fff;
+    font-size: 16px;
+    margin: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: none;
+    cursor: pointer;
+}

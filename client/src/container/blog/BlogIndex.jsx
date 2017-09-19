@@ -8,6 +8,7 @@ import BlogCategories from './BlogCategories.jsx';
 import BlogTags from './BlogTags.jsx';
 import BlogArchives from './BlogArchives.jsx';
 import BlogWatching from './BlogWatching.jsx';
+import Mood from '../../component/blog/Mood.jsx';
 import {Icon} from 'antd';
 
 import styles from './blogIndex.css';
@@ -24,6 +25,15 @@ export default class BlogIndex extends Component {
 		const paths = pathname.split('/');
 		return paths.includes(path);
 	}
+
+	handleItems(e) {
+		e.target.classList.toggle('active');
+	}
+
+	handleMood(e) {
+		e.target.classList.toggle('active');
+	}
+
     render() {
         return (
         	<div className={styles.background}>
@@ -31,9 +41,11 @@ export default class BlogIndex extends Component {
 	        	<div className={styles.wrapper}>
 	        		<div className={styles.nav}>
 						<div className={styles['visiting-card']}>
-							<h1>一首歌时间</h1>
+							<h1><Link to="/blog/back" style={{cursor: 'default'}}>一首歌时间</Link></h1>
 							<p>是要两分，还是三分</p>
 						</div>
+						<Icon type="bars" className={styles['bar-icon']} onClick={(e) => {this.handleItems(e)}}/>
+						<Icon type="coffee" className={styles['mood-icon']} onClick={(e) => {this.handleMood(e)}}/>
 						<ul className={styles['item-box']}>
 							<li className={this.props.location.pathname === '/blog' ? 'active' : ''}>
 								<Link to="/blog">
@@ -71,7 +83,6 @@ export default class BlogIndex extends Component {
 							</li>
 						</ul>
 						<Route path={this.props.match.path} render={(props) => {
-							console.log(props);
 							const pathReg = /^\/blog\/\d+\/\d+\/\d+\/\S+$/;
 							if(pathReg.test(props.location.pathname)) {
 								return <div>
@@ -79,7 +90,7 @@ export default class BlogIndex extends Component {
 								</div>
 							}else{
 								return <div className={styles.mood}>
-									这是心情
+									<Mood />
 								</div>
 							}
 						}}/>

@@ -10,6 +10,10 @@ var _koaViews = require('koa-views');
 
 var _koaViews2 = _interopRequireDefault(_koaViews);
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 var _koaBodyparser = require('koa-bodyparser');
 
 var _koaBodyparser2 = _interopRequireDefault(_koaBodyparser);
@@ -32,6 +36,7 @@ var onerror = require('koa-onerror');
 
 
 var NODE_ENV = process.env.NODE_ENV;
+console.log('node_env:', NODE_ENV);
 
 var app = new _koa2.default();
 onerror(app);
@@ -49,17 +54,15 @@ if (NODE_ENV === 'development') {
 	}));
 	app.use((0, _koaWebpackMiddleware.hotMiddleware)(compile));
 }
-// app.use(async ctx => {
-//     ctx.body = 'Hello World';
-// });
+
 app.use((0, _koaBodyparser2.default)({
 	enableTypes: ['json', 'form', 'text']
 }));
 
 if (NODE_ENV === 'production') {
-	app.use(require('koa-static')('../../client/dist'));
+	app.use(require('koa-static')(_path2.default.join(__dirname, '../../client/dist')));
 
-	app.use((0, _koaViews2.default)('../../client/dist', {
+	app.use((0, _koaViews2.default)(_path2.default.join(__dirname, '../../client/dist'), {
 		extension: 'html'
 	}));
 	var router = require('koa-router')();

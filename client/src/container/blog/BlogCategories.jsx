@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {Link,Route} from 'react-router-dom';
+import BlogCategory from '../../component/blog/BlogCategory.jsx';
 
 import styles from './blogCategories.css';
 
@@ -38,10 +40,17 @@ export default class BlogCategories extends Component {
 		}];
 		return (
 			<div className={styles['categories-wrapper']}>
-				<h2 className={styles.title}>共计{}个分类</h2>
-				<div className={styles['card-box']}>
-					{types.map(type => <TypeCard key={type.name} name={type.name} num={type.num}/>)}
-				</div>
+				<Route exact path={this.props.match.path} render={(props) => {
+					return(
+						<div>
+							<h2 className={styles.title}>共计{}个分类</h2>
+							<div className={styles['card-box']}>
+								{types.map(type => <TypeCard match={props.match} key={type.name} name={type.name} num={type.num}/>)}
+							</div>
+						</div>
+					)
+				}}/>
+				<Route path={`${this.props.match.path}/:name`} component={BlogCategory}/>
 			</div>
 		)
 	}
@@ -81,8 +90,10 @@ class TypeCard extends Component{
 				onMouseOver={(e) => {this.handleHover(e)}}
 				onMouseOut={(e) => {this.handleLeave(e)}}
 			>
-				<span>{this.name}</span>
-				<span>({this.num})</span>
+				<Link to={this.props.match.path + '/' + this.name}>
+					<span>{this.name}</span>
+					<span>({this.num})</span>
+				</Link>
 			</div>
 		)
 	}

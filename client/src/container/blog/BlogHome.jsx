@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import ArticleCard from '../../component/blog/ArticleCard.jsx';
-import Pagination from '../../component/Pagination.jsx';
+import Pagination from '../../component/blog/Pagination.jsx';
 
 import styles from './blogHome.css';
 

@@ -19,11 +19,8 @@ export default class ArticleCard extends Component {
 	render() {
 		return(
 			<div className={styles.card}>
-				<div className={styles['title-box']}>
-					
-				</div>
 				<h1 className={styles.title}>
-					<Link to={this.getPath()}>
+					<Link to={this.getPath()} style={{dispaly: 'block'}}>
 						{this.props.article.title}
 					</Link>
 				</h1>

@@ -4,3 +4,10 @@
 	margin-bottom: 40px;
 	background: #fff;
 }
+
+@media screen and (max-width: 1200px) {
+	.home-wrapper {
+		padding-top: 20px;
+		margin-top: 20px;
+	}
+}

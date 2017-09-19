@@ -1,0 +1,64 @@
+.login-box {
+	position: absolute;
+    width: 400px;
+    height: 280px;
+    top: 50%;
+    left: 50%;
+    margin-top: -140px;
+    margin-left: -200px;
+}
+
+.title {
+	font-size: 20px;
+	text-align: center;
+	line-height: 140px;
+	color: #fff;
+	background: linear-gradient(135deg, #18232f,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6,#34495e);
+}
+
+.ipt-box {
+	padding: 10px;
+	border: 1px solid transparent;
+	border-top-width: 0;
+    border-image: linear-gradient(135deg, #18232f,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6,#34495e) 0 1 1 1;
+}
+
+.ipt-item {
+	display: flex;
+    margin: 0 auto 10px;
+    border: 1px solid #ababab;
+    width: 200px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+}
+.ipt-item i {
+	font-size: 18px;
+	color: #717171;
+}
+.ipt-item input {
+	outline: none;
+	padding-left: 10px;
+	font-size: 14px;
+	width: 100%;
+	border: 0;
+}
+
+.btn {
+	width: 200px;
+	display: block;
+	height: 30px;
+	background: linear-gradient(135deg,#ababab,#717171 50%,#ababab);
+	background-size: 200%;
+	background-position: 100%;
+	color: #fff;
+	border: 0;
+	margin: 0 auto;
+	outline: none;
+	cursor: pointer;
+	transition: all .1s linear;
+}
+
+.btn:hover {
+	background-position: 0%;
+}

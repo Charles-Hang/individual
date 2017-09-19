@@ -22,14 +22,19 @@
 	height: 40px;
 	text-align: right;
 	font-size: 14px;
-	padding: 10px;
-	padding-left: 20px;
 	line-height: 18px;
 	margin: 10px;
 	background: #f5f7f9;
 	cursor: pointer;
 	border-radius: 90% 10% 10% 90% / 20px 15px 15px 20px;
 	position: relative;
+}
+
+.tag a {
+	padding: 10px;
+	padding-left: 20px;
+	display: block;
+	transition: none;
 }
 
 .tag:hover {
