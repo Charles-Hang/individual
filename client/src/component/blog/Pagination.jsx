@@ -24,18 +24,17 @@ export default class Pagination extends Component {
 	}
 
 	render() {
+		console.log(this.props.current,this.props.pages)
 		return (
 			<div className={styles.wrapper} onClick={(e) => {this.changePage(e)}}>
 				<div className={styles['top-line']}/>
 				{this.props.current !== '1' && <Icon type="left" data-page="prev" className={styles.icon}/>}
-				<button data-page="1">1</button>
+				{this.props.current !== '1' && <button data-page="1">1</button>}
 				{(() => {
 					const current = parseInt(this.props.current);
 					const max = parseInt(this.props.pages);
 					const btns = [];
-					if(current !== 1 && current !== max) {
-						btns.push(<button key={current} data-page={current} className="active">{current}</button>);
-					}
+					btns.push(<button key={current} data-page={current} className="active">{current}</button>);
 					if(current > 3) {
 						btns.unshift(<button key={current - 1} data-page={current - 1}>{current - 1}</button>);
 						btns.unshift(<Icon type="ellipsis" key="e-before" style={{fontSize: '16px'}}/>);
@@ -51,7 +50,7 @@ export default class Pagination extends Component {
 					}
 					return btns;
 				})()}
-				<button data-page={this.props.pages}>{this.props.pages}</button>
+				{this.props.current !== this.props.pages && <button data-page={this.props.pages}>{this.props.pages}</button>}
 				{this.props.current !== this.props.pages && <Icon type="right" data-page="next" className={styles.icon}/>}
 			</div>
 		)

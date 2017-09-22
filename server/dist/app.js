@@ -14,9 +14,21 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _koaBodyparser = require('koa-bodyparser');
+var _koaBetterBody = require('koa-better-body');
 
-var _koaBodyparser2 = _interopRequireDefault(_koaBodyparser);
+var _koaBetterBody2 = _interopRequireDefault(_koaBetterBody);
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _os = require('os');
+
+var _os2 = _interopRequireDefault(_os);
+
+var _router = require('./router/router.js');
+
+var _router2 = _interopRequireDefault(_router);
 
 var _webpack = require('webpack');
 
@@ -33,7 +45,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var onerror = require('koa-onerror');
+// import bodyparser from 'koa-bodyparser';
 
+// import koaBody from 'koa-body';
 
 var NODE_ENV = process.env.NODE_ENV;
 console.log('node_env:', NODE_ENV);
@@ -42,7 +56,7 @@ var app = new _koa2.default();
 onerror(app);
 
 if (NODE_ENV === 'development') {
-	app.use(require('koa2-history-api-fallback')());
+	// app.use(require('koa2-history-api-fallback')());
 	var compile = (0, _webpack2.default)(_webpackConfigDev2.default);
 	app.use((0, _koaWebpackMiddleware.devMiddleware)(compile, {
 		noInfo: true,
@@ -53,20 +67,21 @@ if (NODE_ENV === 'development') {
 		}
 	}));
 	app.use((0, _koaWebpackMiddleware.hotMiddleware)(compile));
-}
-
-app.use((0, _koaBodyparser2.default)({
-	enableTypes: ['json', 'form', 'text']
-}));
-
-if (NODE_ENV === 'production') {
+} else {
 	app.use(require('koa-static')(_path2.default.join(__dirname, '../../client/dist')));
 
 	app.use((0, _koaViews2.default)(_path2.default.join(__dirname, '../../client/dist'), {
 		extension: 'html'
 	}));
-	var router = require('koa-router')();
-	router.get('/*', function () {
+}
+
+app.use((0, _koaBetterBody2.default)());
+
+app.use(_router2.default.routes(), _router2.default.allowedMethods());
+
+if (NODE_ENV === 'production') {
+	var routerB = require('koa-router')();
+	routerB.get('/*', function () {
 		var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(ctx, next) {
 			return regeneratorRuntime.wrap(function _callee$(_context) {
 				while (1) {
@@ -87,7 +102,7 @@ if (NODE_ENV === 'production') {
 			return _ref.apply(this, arguments);
 		};
 	}());
-	app.use(router.routes(), router.allowedMethods());
+	app.use(routerB.routes(), routerB.allowedMethods());
 }
 
 app.on('error', function (err, ctx) {
@@ -96,4 +111,4 @@ app.on('error', function (err, ctx) {
 	}
 });
 
-app.listen(3000);
+app.listen(4000);

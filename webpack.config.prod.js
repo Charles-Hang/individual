@@ -76,6 +76,7 @@ module.exports = {
                 'NODE_ENV': JSON.stringify('production')
             }
         }),
+
         new webpack.HashedModuleIdsPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor'
@@ -85,7 +86,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin(indexHtmlConfig),
         new ExtractTextPlugin("css/index.[hash:5].css"),
-
+        new webpack.optimize.OccurrenceOrderPlugin(),
         new UglifyJSPlugin({
             parallel: true,
             uglifyOptions: {
@@ -95,7 +96,7 @@ module.exports = {
                     drop_console: true,
                 }
             }
-        })
+        }),
 
     ]
 };

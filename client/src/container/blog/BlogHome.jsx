@@ -9,14 +9,60 @@ export default class BlogHome extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			currentPage: '7',
-			allPage: '13',
+			articles: [],
+			currentPage: '',
+			allPage: '',
+
 		}
 		this.changePage = this.changePage.bind(this);
 	}
 
 	changePage(newPage) {
-		console.log(newPage);
+		this.getArticles(newPage,5)
+			.then(result => {
+				console.log(result);
+				const articles = this.transformArticle(result.articles);
+				this.setState({
+					articles: articles,
+					allPage: Math.ceil(result.allCount / 5).toString(),
+					currentPage: newPage.toString()
+				});
+			});
+	}
+
+	componentDidMount() {
+		this.getArticles(1,5)
+			.then(result => {
+				console.log(result);
+				const articles = this.transformArticle(result.articles);
+				this.setState({
+					articles: articles,
+					allPage: Math.ceil(result.allCount / 5).toString(),
+					currentPage: '1'
+				});
+			});
+	}
+	getArticles(page,limit) {
+		return fetch(`/getArticles?page=${page}&limit=${limit}`).then(response => {
+			return response.json();
+		}).then(result => {
+			return result;
+		});
+	}
+	transformArticle(articles) {
+		const result = [];
+		articles.forEach(article => {
+		 	const urlArr = article.url.split('/');
+		 	const date = new Date(article.birthTime);
+			const obj = {
+				title: article.title,
+				fileName: urlArr[urlArr.length - 1],
+				date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+				tags: article.tags
+			};
+			result.push(obj);
+		});
+		return result;
 	}
 	render() {
 		const articles = [{
@@ -47,7 +93,7 @@ export default class BlogHome extends Component {
 		}];
 		return (
 			<div className={styles['home-wrapper']}>
-				{articles.map(article => <ArticleCard key={article.title + article.date} article={article}/>)}
+				{this.state.articles.map(article => <ArticleCard key={article.title + article.date} article={article}/>)}
 				<Pagination pages={this.state.allPage} current={this.state.currentPage} changePage={this.changePage}/>
 			</div>
 		)

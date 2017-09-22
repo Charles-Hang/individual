@@ -2,8 +2,13 @@ import 'babel-polyfill';
 import Koa from 'koa';
 import views from 'koa-views';
 import path from 'path';
-const onerror = require('koa-onerror')
-import bodyparser from 'koa-bodyparser';
+const onerror = require('koa-onerror');
+// import bodyparser from 'koa-bodyparser';
+import body from 'koa-better-body';
+import fs from 'fs';
+import os from 'os';
+import router from './router/router.js';
+// import koaBody from 'koa-body';
 
 const NODE_ENV = process.env.NODE_ENV;
 console.log('node_env:', NODE_ENV);
@@ -19,7 +24,7 @@ const app = new Koa();
 onerror(app);
 
 if (NODE_ENV === 'development') {
-	app.use(require('koa2-history-api-fallback')());
+	// app.use(require('koa2-history-api-fallback')());
 	const compile = webpack(devConfig);
 	app.use(devMiddleware(compile, {
 		noInfo: true,
@@ -30,24 +35,24 @@ if (NODE_ENV === 'development') {
 		}
 	}));
 	app.use(hotMiddleware(compile));
-}
-
-app.use(bodyparser({
-	enableTypes: ['json', 'form', 'text']
-}));
-
-
-if (NODE_ENV === 'production') {
+} else {
 	app.use(require('koa-static')(path.join(__dirname, '../../client/dist')));
 
 	app.use(views(path.join(__dirname, '../../client/dist'), {
 		extension: 'html'
 	}));
-	const router = require('koa-router')();
-	router.get('/*', async(ctx, next) => {
+}
+
+app.use(body());
+
+app.use(router.routes(), router.allowedMethods());
+
+if (NODE_ENV === 'production') {
+	const routerB = require('koa-router')();
+	routerB.get('/*', async(ctx, next) => {
 		await ctx.render('index');
 	});
-	app.use(router.routes(), router.allowedMethods());
+	app.use(routerB.routes(), routerB.allowedMethods());
 }
 
 app.on('error', (err, ctx) => {
@@ -56,4 +61,4 @@ app.on('error', (err, ctx) => {
 	}
 });
 
-app.listen(3000);
+app.listen(4000);
