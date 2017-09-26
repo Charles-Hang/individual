@@ -2,6 +2,7 @@ import mongoose from './db.js';
 
 const tagSchema = mongoose.Schema({
 	name: String,
+	count: Number,
 	date: {
 		type: Date,
 		default: Date.now

@@ -11,7 +11,10 @@ const articleSchema = mongoose.Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'tags'
 	}],
-	categories: [String],
+	categories: [{
+		type: Schema.Types.ObjectId,
+		ref: 'categories'
+	}],
 	url: String
 });
 

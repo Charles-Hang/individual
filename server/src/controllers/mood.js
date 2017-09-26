@@ -5,7 +5,7 @@ const moodController = {
 		const body = ctx.request.body;
 		console.log(ctx.request.body);
 		const mood = await Mood.create({
-			mood: body,
+			content: body,
 			date: Date.now()
 		}).catch(err => {
 			ctx.throw(500, '服务器端错误');
@@ -16,7 +16,23 @@ const moodController = {
 		next();
 	},
 	async getMood(ctx, next) {
-		// Mood.find()
+		const mood = await Mood
+			.find()
+			.sort({
+				date: -1
+			})
+			.limit(1)
+			.then(moods => {
+				console.log(moods);
+				if (moods.length) return moods[0].content;
+			})
+			.catch(err => {
+				ctx.throw(500, '服务器错误');
+				next();
+			});
+		console.log(mood);
+		ctx.body = mood;
+		next();
 	}
 }
 

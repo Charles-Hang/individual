@@ -10,34 +10,37 @@ export default class BlogHome extends Component {
 		super(props);
 		this.state = {
 			articles: [],
+			articlesCount: 0,
 			currentPage: '',
 			allPage: '',
-
-		}
+		};
+		this.limit = 5;
 		this.changePage = this.changePage.bind(this);
 	}
 
 	changePage(newPage) {
-		this.getArticles(newPage,5)
+		this.getArticles(newPage,this.limit)
 			.then(result => {
 				console.log(result);
 				const articles = this.transformArticle(result.articles);
 				this.setState({
 					articles: articles,
-					allPage: Math.ceil(result.allCount / 5).toString(),
+					articlesCount: parseInt(result.allCount),
+					allPage: Math.ceil(result.allCount / this.limit).toString(),
 					currentPage: newPage.toString()
 				});
 			});
 	}
 
-	componentDidMount() {
-		this.getArticles(1,5)
+	componentWillMount() {
+		this.getArticles(1,this.limit)
 			.then(result => {
 				console.log(result);
 				const articles = this.transformArticle(result.articles);
 				this.setState({
 					articles: articles,
-					allPage: Math.ceil(result.allCount / 5).toString(),
+					articlesCount: parseInt(result.allCount),
+					allPage: Math.ceil(result.allCount / this.limit).toString(),
 					currentPage: '1'
 				});
 			});
@@ -45,56 +48,32 @@ export default class BlogHome extends Component {
 	getArticles(page,limit) {
 		return fetch(`/getArticles?page=${page}&limit=${limit}`).then(response => {
 			return response.json();
-		}).then(result => {
-			return result;
-		});
+		})
 	}
 	transformArticle(articles) {
 		const result = [];
 		articles.forEach(article => {
 		 	const urlArr = article.url.split('/');
 		 	const date = new Date(article.birthTime);
+		 	const tags = article.tags.map(tag => tag.name);
 			const obj = {
+				id: article._id,
 				title: article.title,
 				fileName: urlArr[urlArr.length - 1],
 				date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-				tags: article.tags
+				tags: tags
 			};
 			result.push(obj);
 		});
 		return result;
 	}
 	render() {
-		const articles = [{
-			title: '[学习笔记]深入理解CSS定位机制之浮动与绝对定位',
-			fileName: 'klsjdk',
-			date: '2014-5-5',
-			tags: ['javascript', 'canvas']
-		},{
-			title: '这是另一个标题',
-			fileName: 'klsjdk',
-			date: '2017-9-19',
-			tags: ['react']
-		},{
-			title: '这是另一个另一9个标题',
-			fileName: 'klsjdk',
-			date: '2017-9-0',
-			tags: ['react']
-		},{
-			title: '这是另一个9标题',
-			fileName: 'klsjdk',
-			date: '2017-9-19',
-			tags: ['react']
-		},{
-			title: '这是个标题',
-			fileName: 'klsjdk',
-			date: '2017-9-0',
-			tags: ['react']
-		}];
 		return (
 			<div className={styles['home-wrapper']}>
 				{this.state.articles.map(article => <ArticleCard key={article.title + article.date} article={article}/>)}
-				<Pagination pages={this.state.allPage} current={this.state.currentPage} changePage={this.changePage}/>
+				{this.state.articlesCount > this.limit &&
+					<Pagination pages={this.state.allPage} current={this.state.currentPage} changePage={this.changePage}/>
+				}
 			</div>
 		)
 	}

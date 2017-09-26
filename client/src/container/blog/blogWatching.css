@@ -1,0 +1,24 @@
+.article-container {
+	font-size: 14px;
+	background: #fff;
+	padding: 40px;
+}
+
+.article-container h1 {
+	margin: 20px 0 15px 0;
+}
+
+.article-container h2 {
+	margin: 15px 0;
+}
+
+.article-container h3,
+.article-container h4,
+.article-container h5,
+.article-container h6 {
+	margin: 10px 0;
+}
+
+.article-container p {
+	margin-bottom: 10px;
+}

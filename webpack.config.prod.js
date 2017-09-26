@@ -5,7 +5,7 @@ var webpack = require('webpack'),
     UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 var indexHtmlConfig = {
-    // favicon: __dirname + '/client/src/static/favicon.ico',
+    favicon: path.join(__dirname + '/client/src/static/img/favicon.ico'),
     template: path.join(__dirname, '/client/src/index.html'),
     filename: 'index.html',
     inject: true,

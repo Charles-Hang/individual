@@ -1,13 +1,18 @@
 .mood {
 	min-height: 350px;
+	max-height: 500px;
+	font-size: 14px;
 	background: #fff;
 	margin-top: 20px;
 	padding: 20px;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .title {
 	font-size: 16px;
 	border: 0 solid;
+	margin-bottom: 20px;
 	border-bottom-width: 1px;
 	border-image: linear-gradient(to right, #18232f,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6,#34495e) 0 0 1 0;
 }

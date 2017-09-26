@@ -1,13 +1,13 @@
 import mongoose from './db.js';
 
 const moodSchema = mongoose.Schema({
-	mood: String,
+	content: String,
 	date: {
 		type: Date,
 		default: Date.now
 	},
 });
 
-const Mood = mongoose.model('mood', moodSchema);
+const Mood = mongoose.model('moods', moodSchema);
 
 export default Mood;

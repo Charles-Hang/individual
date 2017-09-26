@@ -7,45 +7,34 @@ import styles from './blogCategories.css';
 export default class BlogCategories extends Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			categories: [],
+			categoriesCount: 0,
+		};
 	}
 
+	componentWillMount() {
+		this.getCategories().then(result => {
+			this.setState({
+				categories: result,
+				categoriesCount: result.length
+			});
+		});
+	}
+	getCategories() {
+		return fetch('/getCategories').then(response => {
+			return response.json();
+		});
+	}
 	render() {
-		const types = [{
-			name: 'javascript',
-			num: '5'
-		},{
-			name: 'react',
-			num: '2'
-		},{
-			name: 'canvas',
-			num: '8'
-		},{
-			name: 'canvassdf',
-			num: '8'
-		},{
-			name: 'canvsdfas',
-			num: '8'
-		},{
-			name: 'cas',
-			num: '8'
-		},{
-			name: 'canas',
-			num: '8'
-		},{
-			name: 'css',
-			num: '8'
-		},{
-			name: '随笔',
-			num: '8'
-		}];
 		return (
 			<div className={styles['categories-wrapper']}>
 				<Route exact path={this.props.match.path} render={(props) => {
 					return(
 						<div>
-							<h2 className={styles.title}>共计{}个分类</h2>
+							<h2 className={styles.title}>共计{this.state.categoriesCount}个分类</h2>
 							<div className={styles['card-box']}>
-								{types.map(type => <TypeCard match={props.match} key={type.name} name={type.name} num={type.num}/>)}
+								{this.state.categories.map(type => <TypeCard match={props.match} key={type.name} name={type.name} count={type.count}/>)}
 							</div>
 						</div>
 					)
@@ -60,7 +49,7 @@ class TypeCard extends Component{
 	constructor(props) {
 		super(props);
 		this.name = props.name;
-		this.num = props.num;
+		this.count = props.count;
 		this.colors = ['#18232f','#e74c3c','#f0ad4e','#1abc9c','#5bc0de','#9b59b6','#34495e'];
 		this.color = this.colors[Math.round(Math.random() * 6)];
 	}
@@ -92,7 +81,7 @@ class TypeCard extends Component{
 			>
 				<Link to={this.props.match.path + '/' + this.name}>
 					<span>{this.name}</span>
-					<span>({this.num})</span>
+					<span>({this.count})</span>
 				</Link>
 			</div>
 		)

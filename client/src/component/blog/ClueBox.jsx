@@ -4,6 +4,15 @@ import {Link} from 'react-router-dom';
 import styles from './clueBox.css';
 
 export default class ClueBox extends Component {
+	// props.data = [{
+	// 	type
+	// 	name
+	// },{
+	// 	type
+	// 	name
+	// 	date
+	// 	url
+	// }
 	constructor(props) {
 		super(props);
 	}
@@ -23,7 +32,6 @@ function Item(props) {
 	if(props.type === 'large') {
 		return(
 			<div className={styles['large-item']}>
-				<span>{props.date}</span>
 				<span>{props.name}</span>
 			</div>
 		)

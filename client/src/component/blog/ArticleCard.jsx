@@ -6,6 +6,12 @@ import {
 import styles from './articleCard.css';
 
 export default class ArticleCard extends Component {
+	// props.article {
+	// 	title
+	// 	fileName
+	// 	date
+	// 	tags
+	// }
 	constructor(props) {
 		super(props);
 		this.colors = ['#18232f','#1abc9c','#9b59b6','#5bc0de','#f0ad4e','#e74c3c','#34495e'];
@@ -16,10 +22,14 @@ export default class ArticleCard extends Component {
 		const date = this.props.article.date.split('-').join('/');
 		return `/blog/${date}/${this.props.article.fileName}`;
 	}
+
+	saveArticleId() {
+		sessionStorage.setItem(this.props.article.fileName,this.props.article.id);
+	}
 	render() {
 		return(
 			<div className={styles.card}>
-				<h1 className={styles.title}>
+				<h1 className={styles.title} onClick={() => {this.saveArticleId()}}>
 					<Link to={this.getPath()} style={{dispaly: 'block'}}>
 						{this.props.article.title}
 					</Link>
