@@ -231,8 +231,13 @@ const articleController = {
 			});
 		const text = fs.readFileSync(url, 'utf8');
 		const html = md.toHtml(text);
-		console.log(html);
-		ctx.body = html;
+		const toc = md.toToc(text);
+		const tocHtml = md.toHtml(toc);
+		console.log(toc);
+		ctx.body = JSON.stringify({
+			html: html,
+			toc: tocHtml
+		});
 		next();
 	}
 };

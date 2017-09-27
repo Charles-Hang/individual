@@ -8,6 +8,7 @@ import BlogCategories from './BlogCategories.jsx';
 import BlogTags from './BlogTags.jsx';
 import BlogArchives from './BlogArchives.jsx';
 import BlogWatching from './BlogWatching.jsx';
+import Content from '../../component/blog/Content.jsx';
 import Mood from '../../component/blog/Mood.jsx';
 import {Icon} from 'antd';
 
@@ -18,6 +19,27 @@ export default class BlogIndex extends Component {
 		super();
 		this.state = {
 			lastActive: null
+		};
+	}
+
+	componentWillMount() {
+		window.eventEmitter = {
+		    _events: {},
+		    dispatch: function (event, data = '', callback = '') {
+		        if (!this._events[event]) return; // no one is listening to this event
+		        for (let i = 0; i < this._events[event].length; i++) {
+		            this._events[event][i](data,callback);
+		        }
+		    },
+		    subscribe: function (event, callback) {
+		        if (!this._events[event]) this._events[event] = []; // new event
+		        this._events[event].push(callback);
+		    },
+		    unSubscribe: function(event){
+		        if(this._events && this._events[event]) {
+		            delete this._events[event];
+		        }
+		    }
 		};
 	}
 
@@ -86,10 +108,10 @@ export default class BlogIndex extends Component {
 							const pathReg = /^\/blog\/\d+\/\d+\/\d+\/\S+$/;
 							if(pathReg.test(props.location.pathname)) {
 								return <div>
-									这是文章目录
+									<Content />
 								</div>
 							}else{
-								return <div className={styles.mood}>
+								return <div>
 									<Mood />
 								</div>
 							}

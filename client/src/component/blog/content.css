@@ -1,0 +1,36 @@
+.content {
+	width: 300px;
+	min-height: 350px;
+	font-size: 14px;
+	background: #fff;
+	margin-top: 20px;
+	padding: 20px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.title {
+	font-size: 16px;
+	border: 0 solid;
+	margin: 0 20px 20px;
+	border-bottom-width: 1px;
+	border-image: linear-gradient(to right, #18232f,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6,#34495e) 0 0 1 0;
+}
+
+.content ul {
+	margin-left: 20px;
+}
+
+.content li {
+	height: 22px;
+	line-height: 22px;
+	overflow: hidden;
+}
+
+.content li:global.active {
+	height: auto;
+}
+
+.content li:global.active > a {
+	color: #e74c3c;
+}
