@@ -70,7 +70,7 @@ export default class BlogHome extends Component {
 	render() {
 		return (
 			<div className={styles['home-wrapper']}>
-				{this.state.articles.map(article => <ArticleCard key={article.title + article.date} article={article}/>)}
+				{this.state.articles.map(article => <ArticleCard key={article.id} article={article}/>)}
 				{this.state.articlesCount > this.limit &&
 					<Pagination pages={this.state.allPage} current={this.state.currentPage} changePage={this.changePage}/>
 				}

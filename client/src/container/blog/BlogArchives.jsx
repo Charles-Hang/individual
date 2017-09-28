@@ -23,6 +23,7 @@ export default class BlogArchives extends Component {
 				console.log(result);
 				const articles = this.transformArticle(result.articles);
 				articles.unshift({
+					id: 'archives',
 					type: 'large',
 					name: `共计${result.allCount}篇博客`
 				});
@@ -63,12 +64,14 @@ export default class BlogArchives extends Component {
 		 	if(date.getFullYear() != year) {
 				year = date.getFullYear();
 		 		result.push({
+		 			id: article._id + year,
 		 			type: 'large',
 		 			name: year,
 		 		})
 		 	}
 		 	const tags = article.tags.map(tag => tag.name);
 			const obj = {
+				id: article._id,
 				type: 'small',
 				name: article.title,
 				date: `${date.getMonth() + 1}-${date.getDate()}`,

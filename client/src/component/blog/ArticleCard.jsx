@@ -36,7 +36,7 @@ export default class ArticleCard extends Component {
 				</h1>
 				<div className={styles.msg}>
 					<div>发表于 {this.props.article.date}</div>
-					<i className={styles['msg-gap']}/>
+					{!!this.props.article.tags.length && <i className={styles['msg-gap']}/>}
 					{this.props.article.tags.map(tag => (
 						<div key={tag} className={styles.tags} style={{background: this.color}}>
 							<i className={styles['tag-triangle']} style={{borderRightColor: this.color}}/>

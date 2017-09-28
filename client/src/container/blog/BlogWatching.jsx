@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import utils from '../../utils/utils.js';
 
 import styles from './blogWatching.css';
 
@@ -6,10 +7,15 @@ export default class BlogWatching extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			headers: []
-		}
+			headers: [],
+			date: null,
+			title: '',
+			tags: [],
+			categories: []
+		};
 		this.container = null;
 		this.findHighLight = this.findHighLight.bind(this);
+		this.findHighLightDebounce = null;
 	}
 
 	componentDidMount() {
@@ -31,20 +37,40 @@ export default class BlogWatching extends Component {
 				},300);
 				window.eventEmitter.dispatch('content',decodeURI(result.toc));
 				container.innerHTML += result.html;
-				console.log(result);
+				this.setState({
+					title: result.info.title,
+					date: utils.parserDate(result.info.date),
+					tags: result.info.tags,
+					categories: result.info.categories
+				});
 			})
 			.then(() => {
 				const headers = Array.from(container.querySelectorAll('h1,h2,h3,h4,h5,h6'));
 				this.setState({
 					headers: headers
 				});
-				console.log(headers);
 				const codes = document.querySelectorAll('pre code');
 				codes.forEach(block => {
 					hljs.highlightBlock(block);
 				})
 			});
-		window.addEventListener('scroll',this.findHighLight);
+		this.findHighLightDebounce = this.debounce(this.findHighLight,200);
+		window.addEventListener('scroll',this.findHighLightDebounce);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('scroll',this.findHighLightDebounce);
+		window.eventEmitter.unSubscribe('contentReceived');
+	}
+
+	debounce(fuc,delay) {
+		let timer;
+		return function() {
+			if(timer) clearTimeout(timer);
+			timer = setTimeout(() => {
+				fuc();
+			},delay);
+		}
 	}
 
 	findHighLight() {
@@ -55,7 +81,7 @@ export default class BlogWatching extends Component {
 				header = header.offsetParent;
 				headerTop += header.offsetTop;
 			}
-			if(headerTop >= scrollTop) {
+			if(headerTop > scrollTop) {
 				return true;
 			}
 		});
@@ -67,9 +93,24 @@ export default class BlogWatching extends Component {
 	}
 
 	render() {
+		setInterval(()=>{
+			console.log(this.state.date)
+		},1000)
 		return (
 			<div id="article-container" className={styles['article-container']}>
-				
+				<header className={styles.header}>
+					<h1 className={styles.title}>这看似简单</h1>
+					<div className={styles.meta}>
+						{!!this.state.date &&
+							<span>发表于</span>
+						}
+						
+						<i className={styles.gap}/>
+						{!!this.state.categories.length && <span>分类：</span>}
+						<i className={styles.gap}/>
+						<span>标签：</span>
+					</div>
+				</header>
 			</div>
 		)
 	}

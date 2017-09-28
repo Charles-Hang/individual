@@ -5,20 +5,45 @@
 }
 
 .article-container h1 {
-	margin: 20px 0 15px 0;
+	padding: 20px 0 15px 0;
+	font-size: 24px;
 }
 
 .article-container h2 {
-	margin: 15px 0;
+	padding: 15px 0;
 }
 
 .article-container h3,
 .article-container h4,
 .article-container h5,
 .article-container h6 {
-	margin: 10px 0;
+	padding: 10px 0;
 }
 
 .article-container p {
 	margin-bottom: 10px;
+}
+
+.header {
+	margin-bottom: 20px;
+}
+
+.header .title {
+	padding: 0;
+	font-size: 26px;
+	text-align: center;
+}
+
+.meta {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 4px;
+}
+
+.gap {
+	width: 1px;
+	height: 14px;
+	background: #999;
+	margin: 0 10px;
 }

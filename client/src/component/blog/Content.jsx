@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import utils from '../../utils/utils.js';
 
 import styles from './content.css';
 
@@ -31,21 +32,28 @@ export default class Content extends Component {
 		window.eventEmitter.subscribe('highlightContent',(id) => {
 			const target = this.content.querySelector(`[href="#${id}"]`);
 			if(!target) return;
-			console.log(target.parentElement);
 			if(this.state.activeLis.length) {
-				const newActiveLis = this.updateActiveLis(target.parentElement,this.state.activeLis);
+				this.state.activeLis.forEach(li => {
+					li.classList.remove('active');
+				})
+				const newActiveLis = this.updateActiveLis(target.parentElement);
 				this.setState({
 					activeLis: newActiveLis
 				});
 			}else {
-				this.state.activeLis.push(target.parentElement);
+				const newActiveLis = this.updateActiveLis(target.parentElement);
 				this.setState({
-					activeLis: this.state.activeLis
+					activeLis: newActiveLis
 				});
 			}
-			target.parentElement.classList.add('active');
 		})
 		window.addEventListener('scroll', this.contentPosition);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this.contentPosition);
+		window.eventEmitter.unSubscribe('content');
+		window.eventEmitter.unSubscribe('highlightContent');
 	}
 
 	anchorPosition() {
@@ -55,68 +63,60 @@ export default class Content extends Component {
 	contentPosition() {
 		const docScrollTop = document.documentElement.scrollTop;
 		if(this.state.contentTop <= docScrollTop) {
-			console.log(docScrollTop,this.state.contentTop);
 			this.content.style.position = 'fixed';
 			this.content.style.top = '0';
 		}else {
-			console.log(docScrollTop,this.state.contentTop);
 			this.content.style.position = 'static';
 		}
 	}
 
 
 	extendItem(e) {
+		e.preventDefault();
 		let li;
-		if(e.target.nodeName === 'LI') {
-			li = e.target;
+		if(e.target.nodeName !== 'A') {
+			return;
 		}else{
 			li = e.target.parentElement;
 		}
-		console.log(this.state.activeLis,'fklsd')
 		if(this.state.activeLis.length) {
 			const activeLis = this.state.activeLis;
-			const newActiveLis = this.updateActiveLis(li,activeLis);
-			console.log('new',newActiveLis)
+			activeLis.forEach(li => {
+				li.classList.remove('active');
+			})
+			const newActiveLis = this.updateActiveLis(li);
 			this.setState({
 				activeLis: newActiveLis
 			});
 		}else{
-			this.state.activeLis.push(li);
+			const newActiveLis = this.updateActiveLis(li);
 			this.setState({
-				activeLis: this.state.activeLis
+				activeLis: newActiveLis
 			});
 		}
-		console.log(this.state.activeLis);
-		li.classList.add('active');
+		
+		const header = document.getElementById(e.target.hash.slice(1));
+		let offsetHeader = header;
+		let scrollTop = offsetHeader.offsetTop;
+		while(offsetHeader.offsetParent) {
+			offsetHeader = offsetHeader.offsetParent;
+			scrollTop += offsetHeader.offsetTop;
+		}
+		utils.scrollTo(scrollTop);
 	}
 
-	updateActiveLis(target,activeLis) {
-		const lastLi = activeLis[activeLis.length - 1];
-		if(this.isParent(target,lastLi)) {
-			activeLis.push(target);
-			console.log('isParent')
-			return activeLis;
-		}else{
-			console.log('isnotparent')
-			const abandonedLi = activeLis.pop();
-			abandonedLi.classList.remove('active');
-			if(activeLis.length){
-				return this.updateActiveLis(target,activeLis);
-			}else{
-				return [target];
+	updateActiveLis(target) {
+		const lis = [];
+		target.classList.add('active');
+		lis.push(target);
+		while(target.parentElement.nodeName !== 'DIV') {
+			target = target.parentElement;
+			if(target.nodeName === 'LI') {
+				target.classList.add('active');
+				lis.push(target);
 			}
 		}
-	}
-
-	isParent(target,parent) {
-		let item = target;
-		while(item.parentElement) {
-			item = item.parentElement;
-			if(item === parent) {
-				return true;
-			}
-		}
-		return false;
+		return lis;
 	}
 
 	render() {

@@ -5,9 +5,11 @@ import styles from './clueBox.css';
 
 export default class ClueBox extends Component {
 	// props.data = [{
+	// id
 	// 	type
 	// 	name
 	// },{
+	//	id
 	// 	type
 	// 	name
 	// 	date
@@ -21,7 +23,7 @@ export default class ClueBox extends Component {
 		return (
 			<div className={styles.wrapper}>
 				{this.props.data.map(item => {
-					return <Item key={item.name + item.date} {...item} />
+					return <Item key={item.id} {...item} />
 				})}
 			</div>
 		)

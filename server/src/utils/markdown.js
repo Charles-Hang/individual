@@ -1,6 +1,15 @@
 import showdown from 'showdown';
 import toc from 'markdown-toc';
 showdown.setFlavor('github');
+const myext = {
+	type: 'lang',
+	filter: function(text) {
+		const reg = /^<!--.*-->$/g
+		text.replace(reg, '');
+		return text;
+	}
+};
+showdown.extension('myext', myext);
 
 const md = (() => {
 	const converter = new showdown.Converter();

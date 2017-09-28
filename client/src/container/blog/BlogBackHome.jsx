@@ -10,7 +10,6 @@ export default class BlogBackHome extends Component {
 			contentType: 'blogList',
 			file: null,
 			fileWarning: '',
-			publishTitle: '',
 			mood: '',
 		}
 	}
@@ -21,12 +20,6 @@ export default class BlogBackHome extends Component {
 			this.setState({
 				contentType: type
 			});
-	}
-
-	titleChanged(e) {
-		this.setState({
-			publishTitle: e.target.value
-		});
 	}
 
 	fileChanged(e) {
@@ -49,10 +42,8 @@ export default class BlogBackHome extends Component {
 	sureToPublish() {
 		if(this.state.fileWarning) return;
 		if(!this.state.file) return;
-		if(!this.state.publishTitle) return;
 		const formData = new FormData();
 		formData.append('files',this.state.file);
-		formData.append('title',this.state.publishTitle);
 		fetch('/publish',{
 			method: 'POST',
 			body: formData
@@ -127,10 +118,6 @@ export default class BlogBackHome extends Component {
 				}
 				{this.state.contentType === 'newBlog' &&
 					<div className={styles['new-wrapper']}>
-						<p>
-							标题：
-							<input type="text" onChange={(e) => {this.titleChanged(e)}}/>
-						</p>
 						<p>
 							<input style={{display: 'none'}} onChange={(e) => {this.fileChanged(e)}} id="blog-upload-ipt" type="file" accept="text/markdown"/>
 							<label htmlFor="blog-upload-ipt" className={styles['upload-ipt']}>选择文件</label>
