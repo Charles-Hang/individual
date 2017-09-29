@@ -3,7 +3,11 @@ import Tag from '../models/tagModel.js';
 const tagController = {
 	async getTags(ctx, next) {
 		const tags = await Tag
-			.find()
+			.find({
+				count: {
+					$ne: 0
+				}
+			})
 			.sort({
 				date: -1
 			})

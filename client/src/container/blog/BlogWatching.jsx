@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 import utils from '../../utils/utils.js';
 
 import styles from './blogWatching.css';
@@ -8,7 +9,7 @@ export default class BlogWatching extends Component {
 		super(props);
 		this.state = {
 			headers: [],
-			date: null,
+			date: '',
 			title: '',
 			tags: [],
 			categories: []
@@ -39,7 +40,7 @@ export default class BlogWatching extends Component {
 				container.innerHTML += result.html;
 				this.setState({
 					title: result.info.title,
-					date: utils.parserDate(result.info.date),
+					date: utils.parseDate(result.info.date),
 					tags: result.info.tags,
 					categories: result.info.categories
 				});
@@ -93,24 +94,45 @@ export default class BlogWatching extends Component {
 	}
 
 	render() {
-		setInterval(()=>{
-			console.log(this.state.date)
-		},1000)
 		return (
-			<div id="article-container" className={styles['article-container']}>
+			<div className={styles.wrapper}>
 				<header className={styles.header}>
-					<h1 className={styles.title}>这看似简单</h1>
+					<h1 className={styles.title}>{this.state.title}</h1>
 					<div className={styles.meta}>
-						{!!this.state.date &&
-							<span>发表于</span>
+						{this.state.date && <span>发表于 {this.state.date}</span>}
+						{!!this.state.categories.length && <i className={styles.gap}/>}
+						{!!this.state.categories.length &&
+							<span>
+								分类：
+								{this.state.categories.map(category => {
+									return <Link
+										key={category._id}
+										className={styles.link}
+										to={`/blog/categories/${category.name}`}
+									>
+										{category.name}
+									</Link>;
+								})}
+							</span>
 						}
-						
-						<i className={styles.gap}/>
-						{!!this.state.categories.length && <span>分类：</span>}
-						<i className={styles.gap}/>
-						<span>标签：</span>
+						{!!this.state.tags.length && <i className={styles.gap}/>}
+						{!!this.state.tags.length &&
+							<span>
+								标签：
+								{this.state.tags.map(tag => {
+									return <Link
+										key={tag._id}
+										className={styles.link}
+										to={`/blog/tags/${tag.name}`}
+									>
+										{tag.name}
+									</Link>
+								})}
+							</span>
+						}
 					</div>
 				</header>
+				<div id="article-container" className={styles['article-container']} />
 			</div>
 		)
 	}

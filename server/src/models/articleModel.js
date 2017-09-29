@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const articleSchema = mongoose.Schema({
 	title: String,
+	publish: Boolean,
 	birthTime: {
 		type: Date,
 		default: Date.now

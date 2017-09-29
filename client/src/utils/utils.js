@@ -15,10 +15,13 @@ const utils = {
 			}
 		}, 30);
 	},
-	parserDate(date) {
+	parseDate(date) {
 		const d = new Date(date);
-		console.log(d)
 		return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+	},
+	parseDetailDate(date) {
+		const d = new Date(date);
+		return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
 	}
 }
 

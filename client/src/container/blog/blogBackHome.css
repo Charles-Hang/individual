@@ -18,17 +18,23 @@
     cursor: pointer;
 }
 
-.del-btn {
+.btn {
     border: 0;
     background: transparent;
-    color: #e74c3c;
     outline: none;
     cursor: pointer;
 }
 
+.del-btn {
+    composes: btn;
+    color: #e74c3c;
+    margin-right: 10px;
+}
+
+
 .table-wrapper {
     width: 90%;
-    margin: 0 auto;
+    margin: 20px auto 0;
 }
 
 .new-wrapper {

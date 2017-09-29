@@ -41,10 +41,15 @@ function Item(props) {
 		return(
 			<div className={styles['small-item']}>
 				<span>{props.date}</span>
-				<span className={styles['item-name']}><Link to={props.url}>{props.name}</Link></span>
+				<span className={styles['item-name']}>
+					<Link to={props.url} onClick={() => {saveArticleId(props.fileName,props.id)}}>{props.name}</Link>
+				</span>
 				<i className={styles.line}/>
 			</div>
 		)
 	}
-	
+}
+
+function saveArticleId(fileName,id) {
+	sessionStorage.setItem(fileName,id);
 }

@@ -61,6 +61,7 @@ export default class Content extends Component {
 	}
 
 	contentPosition() {
+		if(window.innerWidth < 1200) return;
 		const docScrollTop = document.documentElement.scrollTop;
 		if(this.state.contentTop <= docScrollTop) {
 			this.content.style.position = 'fixed';
@@ -68,6 +69,7 @@ export default class Content extends Component {
 		}else {
 			this.content.style.position = 'static';
 		}
+
 	}
 
 

@@ -3,7 +3,11 @@ import Category from '../models/categoryModel.js';
 const categoryController = {
 	async getCategories(ctx, next) {
 		const categories = await Category
-			.find()
+			.find({
+				count: {
+					$ne: 0
+				}
+			})
 			.sort({
 				date: -1
 			})

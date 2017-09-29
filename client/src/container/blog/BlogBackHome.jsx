@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Table} from 'antd';
+import utils from '../../utils/utils.js';
 
 import styles from './blogBackHome.css';
 
@@ -14,12 +15,49 @@ export default class BlogBackHome extends Component {
 		}
 	}
 
+	componentDidMount() {
+		this.getAllArticles()
+			.then(result => {
+				this.setState({
+					articles: this.transfromArticles(result)
+				});
+			});
+	}
+
+	transfromArticles(articles) {
+		const result = [];
+		articles.forEach(article => {
+			result.push({
+				key: article._id,
+				title: article.title,
+				birthTime: utils.parseDetailDate(article.birthTime),
+				published: article.publish 
+			});
+		});
+		return result;
+	}
+
 	changeType(e) {
 		const type = e.target.dataset.type;
 		type !== this.state.contentType &&
 			this.setState({
 				contentType: type
 			});
+		if(type === 'blogList') {
+			this.getAllArticles()
+				.then(result => {
+					this.setState({
+						articles: this.transfromArticles(result)
+					});
+				})
+		}
+	}
+
+	getAllArticles() {
+		return fetch('/getAllArticles')
+			.then(response => {
+				return response.json();
+			})
 	}
 
 	fileChanged(e) {
@@ -70,29 +108,55 @@ export default class BlogBackHome extends Component {
 			console.log(data);
 		});
 	}
+
+	togglePublish(published,key) {
+		fetch('/togglePublish',{
+			method: 'POST',
+			body: JSON.stringify({
+				publish: !published,
+				id: key
+			})
+		}).then(response => {
+			return response.json();
+		}).then(result => {
+			console.log(result);
+			let articles = this.state.articles;
+			const index = articles.findIndex(article => {
+				return article.key === result._id;
+			});
+			articles[index].published = result.publish;
+			this.setState({
+				articles: articles
+			});
+		});
+	}
 	render() {
 		const columns = [{
 			title: '标题',
 			key: 'title',
 			dataIndex: 'title'
 		},{
-			title: '发布日期',
+			title: '发表日期',
 			key: 'birthTime',
 			dataIndex: 'birthTime'
 		},{
+			title: '状态',
+			key: 'published',
+			dataIndex: 'published',
+			render: (text) => <span>{text ? '已发布' : '未发布'}</span>
+		},{
 			title: '操作',
 			key: 'operate',
-			render: (text,record,index) => <button className={styles['del-btn']}>删除</button>
+			render: (text,record,index) => <span>
+				<button className={styles['del-btn']}>删除</button>
+				<button
+					className={styles.btn}
+					onClick={() => {this.togglePublish(record.published,record.key)}}
+				>
+					{record.published ? '取消发布' : '发布'}
+				</button>
+			</span>
 		}];
-		
-		const data = [];
-		for (let i = 0; i < 46; i++) {
-		  data.push({
-		    key: i,
-		    title: `这是标题 ${i}`,
-		    birthTime: '2017-2-2',
-		  });
-		}
 
 		const pagination = {
 			defaultPageSize: 20,
@@ -109,7 +173,7 @@ export default class BlogBackHome extends Component {
 					<div className={styles['table-wrapper']}>
 						<Table
 							columns={columns}
-							dataSource={data}
+							dataSource={this.state.articles}
 							size="middle"
 							bordered
 							pagination={pagination}

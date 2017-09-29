@@ -20,6 +20,7 @@ export default class BlogTag extends Component {
 				console.log(result);
 				const articles = this.transformArticle(result.articles);
 				articles.unshift({
+					id: 'tag',
 					type: 'large',
 					name: `${this.props.match.params.name}标签`
 				});
@@ -61,13 +62,16 @@ export default class BlogTag extends Component {
 		 	if(date.getFullYear() != year) {
 				year = date.getFullYear();
 		 		result.push({
+		 			id: article._id + year,
 		 			type: 'large',
 		 			name: year,
 		 		})
 		 	}
 			const obj = {
+				id: article._id,
 				type: 'small',
 				name: article.title,
+				fileName: urlArr[urlArr.length - 1],
 				date: `${date.getMonth() + 1}-${date.getDate()}`,
 				url: `/blog/${year}/${date.getMonth() + 1}/${date.getDate()}/${urlArr[urlArr.length - 1]}`
 			};

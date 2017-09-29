@@ -51,7 +51,7 @@ export default class BlogArchives extends Component {
 	}
 
 	getArticles(page,limit) {
-		return fetch(`/getArticles?page=${page}&limit=${limit}`).then(response => {
+		return fetch(`/getPublishedArticles?page=${page}&limit=${limit}`).then(response => {
 			return response.json();
 		})
 	}
@@ -69,11 +69,11 @@ export default class BlogArchives extends Component {
 		 			name: year,
 		 		})
 		 	}
-		 	const tags = article.tags.map(tag => tag.name);
 			const obj = {
 				id: article._id,
 				type: 'small',
 				name: article.title,
+				fileName: urlArr[urlArr.length - 1],
 				date: `${date.getMonth() + 1}-${date.getDate()}`,
 				url: `/blog/${year}/${date.getMonth() + 1}/${date.getDate()}/${urlArr[urlArr.length - 1]}`
 			};

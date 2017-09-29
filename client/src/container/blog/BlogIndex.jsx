@@ -11,6 +11,7 @@ import BlogWatching from './BlogWatching.jsx';
 import Content from '../../component/blog/Content.jsx';
 import Mood from '../../component/blog/Mood.jsx';
 import {Icon} from 'antd';
+import utils from '../../utils/utils.js';
 
 import styles from './blogIndex.css';
 
@@ -20,6 +21,8 @@ export default class BlogIndex extends Component {
 		this.state = {
 			lastActive: null
 		};
+		this.toTopBtn = null;
+		this.scrollHandling = this.scrollHandling.bind(this);
 	}
 
 	componentWillMount() {
@@ -43,6 +46,24 @@ export default class BlogIndex extends Component {
 		};
 	}
 
+	componentDidMount() {
+		this.toTopBtn = document.getElementsByClassName(styles['to-top-btn'])[0];
+		window.addEventListener('scroll',this.scrollHandling);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('scroll',this.scrollHandling);
+	}
+
+	scrollHandling() {
+		const scrollTop = document.documentElement.scrollTop;
+		if(scrollTop >= 371) {
+			this.toTopBtn.classList.add('active');
+		}else{
+			this.toTopBtn.classList.remove('active');
+		}
+	}
+
 	pathIn(pathname,path) {
 		const paths = pathname.split('/');
 		return paths.includes(path);
@@ -56,6 +77,10 @@ export default class BlogIndex extends Component {
 		e.target.classList.toggle('active');
 	}
 
+	scrollToTop() {
+		utils.scrollTo(0);
+	}
+
     render() {
         return (
         	<div className={styles.background}>
@@ -67,7 +92,18 @@ export default class BlogIndex extends Component {
 							<p>是要两分，还是三分</p>
 						</div>
 						<Icon type="bars" className={styles['bar-icon']} onClick={(e) => {this.handleItems(e)}}/>
-						<Icon type="coffee" className={styles['mood-icon']} onClick={(e) => {this.handleMood(e)}}/>
+						<Route path={this.props.match.path} render={(props) => {
+							const pathReg = /^\/blog\/\d+\/\d+\/\d+\/\S+$/;
+							if(!pathReg.test(props.location.pathname)) {
+								return <Icon
+									type="coffee"
+									className={styles['mood-icon']}
+									onClick={(e) => {this.handleMood(e)}}
+								/>
+							}else {
+								return null;
+							}
+						}}/>
 						<ul className={styles['item-box']}>
 							<li className={this.props.location.pathname === '/blog' ? 'active' : ''}>
 								<Link to="/blog">
@@ -107,11 +143,11 @@ export default class BlogIndex extends Component {
 						<Route path={this.props.match.path} render={(props) => {
 							const pathReg = /^\/blog\/\d+\/\d+\/\d+\/\S+$/;
 							if(pathReg.test(props.location.pathname)) {
-								return <div>
+								return <div >
 									<Content />
 								</div>
 							}else{
-								return <div>
+								return <div className={styles.mood}>
 									<Mood />
 								</div>
 							}
@@ -128,6 +164,9 @@ export default class BlogIndex extends Component {
 	        			<Route path={`${this.props.match.path}/archives`} component={BlogArchives}/>
 	        		</div>
 	        	</div>
+	        	<span className={styles['to-top-btn']} onClick={() => {this.scrollToTop()}}>
+	        		<Icon type="to-top" />
+	        	</span>
         	</div>
         ) 
     }

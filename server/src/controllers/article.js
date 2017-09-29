@@ -124,6 +124,7 @@ const articleController = {
 
 		const result = await Article.create({
 			title: info.title || '无题',
+			publish: true,
 			birthTime: info.date ? new Date(info.date) : Date.now(),
 			tags: tagsId.length ? tagsId : [],
 			categories: categoriesId.length ? categoriesId : [],
@@ -137,11 +138,13 @@ const articleController = {
 		ctx.body = 'successful';
 		next();
 	},
-	async getArticles(ctx, next) {
+	async getPublishedArticles(ctx, next) {
 		const page = ctx.query.page;
 		const limit = ctx.query.limit;
 		const docs = await Article
-			.find()
+			.find({
+				publish: true
+			})
 			.sort({
 				'birthTime': -1
 			})
@@ -153,7 +156,9 @@ const articleController = {
 				next();
 			});
 		const allCount = await Article
-			.count()
+			.count({
+				publish: true
+			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
 				next();
@@ -181,6 +186,7 @@ const articleController = {
 			});
 		const docs = await Article
 			.find({
+				publish: true,
 				categories: {
 					$in: [categoryId]
 				}
@@ -196,6 +202,7 @@ const articleController = {
 			});
 		const allCount = await Article
 			.count({
+				publish: true,
 				categories: {
 					$in: [categoryId]
 				}
@@ -227,6 +234,7 @@ const articleController = {
 			});
 		const docs = await Article
 			.find({
+				publish: true,
 				tags: {
 					$in: [tagId]
 				}
@@ -242,6 +250,7 @@ const articleController = {
 			});
 		const allCount = await Article
 			.count({
+				publish: true,
 				tags: {
 					$in: [tagId]
 				}
@@ -282,6 +291,71 @@ const articleController = {
 				categories: doc.categories
 			}
 		});
+		next();
+	},
+	async getAllArticles(ctx, next) {
+		const articles = await Article
+			.find()
+			.sort({
+				birthTime: -1
+			})
+			.populate('tags')
+			.populate('categories')
+			.catch(err => {
+				ctx.throw(500, '服务器错误', err);
+				next();
+			});
+		ctx.body = JSON.stringify(articles);
+		next();
+	},
+	async togglePublish(ctx, next) {
+		const body = JSON.parse(ctx.request.body);
+		const publish = body.publish;
+		const id = body.id;
+		console.log(publish, id, body);
+		const article = await Article
+			.findOneAndUpdate({
+				_id: id
+			}, {
+				$set: {
+					publish: publish
+				}
+			}, {
+				new: true
+			})
+			.catch(err => {
+				ctx.throw(500, '服务器错误', err);
+				next();
+			});
+		const tagPromises = article.tags.map(tag => {
+			return Tag.update({
+					_id: tag
+				}, {
+					$inc: {
+						count: publish ? 1 : -1
+					}
+				})
+				.catch(err => {
+					ctx.throw(500, '服务器错误', err);
+					next();
+				});
+		});
+		const tagsData = await Promise.all(tagPromises);
+		const categoryPromises = article.categories.map(category => {
+			return Category.update({
+					_id: category
+				}, {
+					$inc: {
+						count: publish ? 1 : -1
+					}
+				})
+				.catch(err => {
+					ctx.throw(500, '服务器错误', err);
+					next();
+				});
+		});
+		const categoriesDate = await Promise.all(categoryPromises);
+		ctx.body = JSON.stringify(article);
 		next();
 	}
 };

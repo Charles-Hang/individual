@@ -1,18 +1,21 @@
 import showdown from 'showdown';
 import toc from 'markdown-toc';
 showdown.setFlavor('github');
-const myext = {
-	type: 'lang',
-	filter: function(text) {
-		const reg = /^<!--.*-->$/g
-		text.replace(reg, '');
-		return text;
-	}
-};
-showdown.extension('myext', myext);
+showdown.extension('myext', function() {
+	return [{
+		type: 'output',
+		filter: function(text) {
+			const regex = /^<!--.*-->$/gm;
+			const newText = text.replace(regex, '');
+			return newText;
+		}
+	}]
+});
 
 const md = (() => {
-	const converter = new showdown.Converter();
+	const converter = new showdown.Converter({
+		extensions: ['myext']
+	});
 	return {
 		toHtml(text) {
 			return converter.makeHtml(text);

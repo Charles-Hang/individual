@@ -46,7 +46,7 @@ export default class BlogHome extends Component {
 			});
 	}
 	getArticles(page,limit) {
-		return fetch(`/getArticles?page=${page}&limit=${limit}`).then(response => {
+		return fetch(`/getPublishedArticles?page=${page}&limit=${limit}`).then(response => {
 			return response.json();
 		})
 	}

@@ -20,6 +20,7 @@ export default class BlogCategory extends Component {
 				console.log(result);
 				const articles = this.transformArticle(result.articles);
 				articles.unshift({
+					id: 'category',
 					type: 'large',
 					name: `${this.props.match.params.name}分类`
 				});
@@ -61,13 +62,16 @@ export default class BlogCategory extends Component {
 		 	if(date.getFullYear() != year) {
 				year = date.getFullYear();
 		 		result.push({
+		 			id: article._id + year,
 		 			type: 'large',
 		 			name: year,
 		 		})
 		 	}
 			const obj = {
+				id: article._id,
 				type: 'small',
 				name: article.title,
+				fileName: urlArr[urlArr.length - 1],
 				date: `${date.getMonth() + 1}-${date.getDate()}`,
 				url: `/blog/${year}/${date.getMonth() + 1}/${date.getDate()}/${urlArr[urlArr.length - 1]}`
 			};
