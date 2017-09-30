@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Table} from 'antd';
-import utils from '../../utils/utils.js';
+import utils from '../../../utils/utils.js';
 
 import styles from './blogBackHome.css';
 
@@ -112,6 +112,9 @@ export default class BlogBackHome extends Component {
 	togglePublish(published,key) {
 		fetch('/togglePublish',{
 			method: 'POST',
+			headers: {
+				'Authorization': sessionStorage.getItem('token')
+			},
 			body: JSON.stringify({
 				publish: !published,
 				id: key

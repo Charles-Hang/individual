@@ -3,12 +3,11 @@ import Koa from 'koa';
 import views from 'koa-views';
 import path from 'path';
 const onerror = require('koa-onerror');
-// import bodyparser from 'koa-bodyparser';
 import body from 'koa-better-body';
 import fs from 'fs';
 import os from 'os';
 import router from './router/router.js';
-// import koaBody from 'koa-body';
+import UController from './controllers/user.js';
 
 const NODE_ENV = process.env.NODE_ENV;
 console.log('node_env:', NODE_ENV);
@@ -46,6 +45,8 @@ if (NODE_ENV === 'development') {
 app.use(body());
 
 app.use(router.routes(), router.allowedMethods());
+
+// app.use(UController.initAdmin);
 
 if (NODE_ENV === 'production') {
 	const routerB = require('koa-router')();

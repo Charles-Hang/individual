@@ -45,9 +45,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var onerror = require('koa-onerror');
-// import bodyparser from 'koa-bodyparser';
 
-// import koaBody from 'koa-body';
 
 var NODE_ENV = process.env.NODE_ENV;
 console.log('node_env:', NODE_ENV);

@@ -309,6 +309,7 @@ const articleController = {
 		next();
 	},
 	async togglePublish(ctx, next) {
+		console.log(ctx.headers, ctx.header);
 		const body = JSON.parse(ctx.request.body);
 		const publish = body.publish;
 		const id = body.id;

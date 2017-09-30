@@ -62,3 +62,10 @@
 .btn:hover {
 	background-position: 0%;
 }
+
+.warning {
+	position: absolute;
+	color: #e74c3c;
+    right: 5px;
+    bottom: 20px;
+}
