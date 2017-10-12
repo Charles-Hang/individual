@@ -51,7 +51,7 @@ export default class BlogWatching extends Component {
 					headers: headers
 				});
 				const codes = document.querySelectorAll('pre code');
-				codes.forEach(block => {
+				Array.from(codes).forEach(block => {
 					hljs.highlightBlock(block);
 				})
 			});

@@ -355,7 +355,8 @@ const articleController = {
 	async getArticlesByCategory(ctx, next) {
 		const page = parseInt(ctx.query.page);
 		const limit = parseInt(ctx.query.limit);
-		const category = ctx.query.category;
+		const category = decodeURI(ctx.query.category);
+		console.log(category, page, limit, '`````````````````');
 		const categoryId = await Category
 			.findOne({
 				name: category
@@ -397,9 +398,9 @@ const articleController = {
 		});
 	},
 	async getArticlesByTag(ctx, next) {
-			const page = parseInt(ctx.query.page);
+		const page = parseInt(ctx.query.page);
 		const limit = parseInt(ctx.query.limit);
-		const tag = ctx.query.tag;
+		const tag = decodeURI(ctx.query.tag);
 		const tagId = await Tag
 			.findOne({
 				name: tag

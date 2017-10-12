@@ -10,7 +10,7 @@ export default class BlogCategory extends Component {
 			allPage: '',
 			currentPage: '',
 		};
-		this.limit = 5;
+		this.limit = 10;
 		this.changePage = this.changePage.bind(this);
 	}
 
@@ -48,9 +48,13 @@ export default class BlogCategory extends Component {
 	}
 
 	getArticles(page,limit) {
-		return fetch(`/getArticlesByCategory?page=${page}&limit=${limit}&category=${this.props.match.params.name}`).then(response => {
-			return response.json();
-		})
+		return fetch(`/getArticlesByCategory?page=${page}&limit=${limit}&category=${encodeURI(this.props.match.params.name)}`)
+			.then(response => {
+				return response.json();
+			})
+			.catch(err => {
+				console.log(err);
+			})
 	}
 
 	transformArticle(articles) {

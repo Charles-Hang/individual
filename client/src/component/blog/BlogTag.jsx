@@ -10,7 +10,7 @@ export default class BlogTag extends Component {
 			allPage: '',
 			currentPage: '',
 		};
-		this.limit = 5;
+		this.limit = 10;
 		this.changePage = this.changePage.bind(this);
 	}
 
@@ -48,7 +48,7 @@ export default class BlogTag extends Component {
 	}
 
 	getArticles(page,limit) {
-		return fetch(`/getArticlesByTag?page=${page}&limit=${limit}&tag=${this.props.match.params.name}`).then(response => {
+		return fetch(`/getArticlesByTag?page=${page}&limit=${limit}&tag=${encodeURI(this.props.match.params.name)}`).then(response => {
 			return response.json();
 		})
 	}
