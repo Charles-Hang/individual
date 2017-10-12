@@ -325,8 +325,8 @@ const articleController = {
 		ctx.body = 'success';
 	},
 	async getPublishedArticles(ctx, next) {
-		const page = ctx.query.page;
-		const limit = ctx.query.limit;
+		const page = parseInt(ctx.query.page);
+		const limit = parseInt(ctx.query.limit);
 		const docs = await Article
 			.find({
 				publish: true
@@ -353,8 +353,8 @@ const articleController = {
 		});
 	},
 	async getArticlesByCategory(ctx, next) {
-		const page = ctx.query.page;
-		const limit = ctx.query.limit;
+		const page = parseInt(ctx.query.page);
+		const limit = parseInt(ctx.query.limit);
 		const category = ctx.query.category;
 		const categoryId = await Category
 			.findOne({
@@ -397,8 +397,8 @@ const articleController = {
 		});
 	},
 	async getArticlesByTag(ctx, next) {
-		const page = ctx.query.page;
-		const limit = ctx.query.limit;
+			const page = parseInt(ctx.query.page);
+		const limit = parseInt(ctx.query.limit);
 		const tag = ctx.query.tag;
 		const tagId = await Tag
 			.findOne({

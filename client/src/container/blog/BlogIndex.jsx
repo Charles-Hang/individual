@@ -97,7 +97,7 @@ export default class BlogIndex extends Component {
 	        	<div className={styles.wrapper}>
 	        		<div className={styles.nav}>
 						<div className={styles['visiting-card']}>
-							<h1><Link to="/blog/back" style={{cursor: 'default'}}>一首歌时间</Link></h1>
+							<h1><Link to="/blog/back" style={{cursor: 'default'}}>午星的博客</Link></h1>
 							<p>{this.state.sign}</p>
 						</div>
 						<i className={`${styles['bar-icon']} iconfont icon-shangpinfenlei01`} onClick={(e) => {this.handleItems(e)}}/>

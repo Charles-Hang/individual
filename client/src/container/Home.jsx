@@ -113,12 +113,12 @@ export default class Home extends Component {
         	<div>
         		<canvas id="home-canvas" className={styles['home-canvas']}></canvas>
         		<div className={styles.menu}>
-        			<p className={styles.title}>这是标题这是标题的这是标题！</p>
+        			<p className={styles.title}>午星的个人主页</p>
         			<div className={`${styles.item} ${styles.item1}`}>
-        				<Link to="/blog" style={{display: 'block'}}>这是方块</Link>
+        				<Link to="/blog" style={{display: 'block'}}>个人博客</Link>
         			</div>
         			<div className={`${styles.item} ${styles.item2}`}>
-						<Link to="/project" style={{display: 'block'}}>这是方块</Link>
+						<Link to="/project" style={{display: 'block'}}>待定</Link>
         			</div>
         		</div>
         	</div>
