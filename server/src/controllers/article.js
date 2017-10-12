@@ -9,8 +9,11 @@ import md from '../utils/markdown.js';
 
 const articleController = {
 	async createArticle(ctx, next) {
-		const file = ctx.request.fields.files[0];
-		const hasBlogFile = await new Promise((resolve, reject) => {
+		const {
+			filename,
+			content
+		} = JSON.parse(ctx.request.body);
+		const noBlogFile = await new Promise((resolve, reject) => {
 			fs.access(path.join(os.homedir(), 'blogFiles'), function(err) {
 				if (err) {
 					resolve(err);
@@ -19,12 +22,15 @@ const articleController = {
 				}
 			});
 		});
-		if (hasBlogFile) {
+		if (noBlogFile) {
 			fs.mkdirSync(path.join(os.homedir(), 'blogFiles'));
 		}
-		const reader = fs.createReadStream(file.path);
-		const stream = fs.createWriteStream(path.join(os.homedir(), 'blogFiles', file.name));
-		reader.pipe(stream);
+		try {
+			fs.writeFileSync(path.join(os.homedir(), 'blogFiles', filename), content);
+		} catch (err) {
+			ctx.throw(500, '服务器错误', err);
+		};
+		const reader = fs.createReadStream(path.join(os.homedir(), 'blogFiles', filename));
 
 		const info = {};
 		const rl = readline.createInterface({
@@ -80,7 +86,6 @@ const articleController = {
 					})
 					.catch(err => {
 						ctx.throw(500, '服务器错误', err);
-						next();
 					});
 				return doc;
 			});
@@ -111,7 +116,6 @@ const articleController = {
 					})
 					.catch(err => {
 						ctx.throw(500, '服务器错误', err);
-						next();
 					});
 				return doc;
 			});
@@ -123,20 +127,202 @@ const articleController = {
 		}
 
 		const result = await Article.create({
-			title: info.title || '无题',
+			title: info.title ? info.title.trim() : '无题',
 			publish: true,
 			birthTime: info.date ? new Date(info.date) : Date.now(),
 			tags: tagsId.length ? tagsId : [],
 			categories: categoriesId.length ? categoriesId : [],
-			url: path.join(os.homedir(), 'blogFiles', file.name)
+			url: path.join(os.homedir(), 'blogFiles', filename)
 		}).catch(err => {
 			ctx.throw(500, '服务器错误' + err);
-			next();
 		});
-		console.log('meicuomeicuo');
 		console.log(result);
-		ctx.body = 'successful';
-		next();
+		ctx.body = 'success';
+	},
+	async editArticle(ctx, next) {
+		const {
+			filename,
+			content,
+			id
+		} = JSON.parse(ctx.request.body);
+
+		try {
+			fs.writeFileSync(path.join(os.homedir(), 'blogFiles', filename), content);
+		} catch (err) {
+			ctx.throw(500, '服务器错误', err);
+		};
+		const reader = fs.createReadStream(path.join(os.homedir(), 'blogFiles', filename));
+
+		const info = {};
+		const rl = readline.createInterface({
+			input: reader
+		});
+		rl.on('line', (line) => {
+			const reg = /^<!--(.*)-->$/g;
+			if (!reg.test(line)) {
+				rl.close();
+			} else {
+				console.log(line);
+				const newLine = line.replace(reg, '$1');
+				const item = newLine.trim().split(':');
+				console.log('item', item);
+				if (item[0] !== 'date') {
+					info[item[0]] = item[1];
+				} else {
+					item.shift();
+					info.date = item.join(':');
+				}
+			}
+		});
+		const rlEnd = await new Promise(resolve => {
+			rl.on('close', () => {
+				resolve();
+			});
+		}).catch(err => {
+			console.log('await rlEnd err', err);
+		});
+		console.log('info', info);
+		const newTags = info.tags ? info.tags.trim().split(' ') : [];
+		const newCategories = info.categories ? info.categories.trim().split(' ') : [];
+		const newTitle = info.title ? info.title.trim() : '无题';
+		const newUrl = path.join(os.homedir(), 'blogFiles', filename);
+
+		const original = await Article
+			.findById(id)
+			.populate('tags')
+			.populate('categories')
+			.catch(err => {
+				ctx.throw(500, '服务器错误', err);
+			});
+		console.log('original', original);
+		const {
+			title,
+			tags,
+			categories,
+			url
+		} = original;
+		if (newUrl !== url) {
+			try {
+				fs.unlinkSync(url);
+			} catch (err) {
+				ctx.throw(500, '服务器错误', err);
+			}
+		}
+		const tagPromises = newTags.map(newTag => {
+			let exist = false,
+				existId;
+			tags.forEach(tag => {
+				if (tag.name === newTag) {
+					exist = true;
+					existId = tag._id;
+				}
+			});
+			if (exist) {
+				return new Promise(resolve => {
+					resolve(existId);
+				});
+			} else {
+				return Tag.findOneAndUpdate({
+						name: newTag
+					}, {
+						$inc: {
+							count: 1
+						}
+					})
+					.then(result => {
+						if (result) return result._id;
+						return Tag.create({
+							name: newTag,
+							count: 1
+						}).then(result => {
+							return result._id;
+						});
+					})
+					.catch(err => {
+						ctx.throw(500, '服务器错误', err);
+					});
+			}
+		});
+		const newTagsId = await Promise.all(tagPromises);
+		console.log('newTagsId', newTagsId);
+		const tagUnLinkPromises = tags.map(tag => {
+			if (!newTags.includes(tag.name)) {
+				return Tag
+					.findByIdAndUpdate(tag._id, {
+						$inc: {
+							count: -1
+						}
+					})
+					.catch(err => {
+						ctx.throw(500, '服务器错误', err);
+					});
+			}
+		});
+		await Promise.all(tagUnLinkPromises);
+
+		const categoryPromises = newCategories.map(newCategory => {
+			let exist = false,
+				existId;
+			categories.forEach(category => {
+				if (category.name === newCategory) {
+					exist = true;
+					existId = category._id;
+				}
+			});
+			if (exist) {
+				return new Promise(resolve => {
+					resolve(existId);
+				});
+			} else {
+				return Category.findOneAndUpdate({
+						name: newCategory
+					}, {
+						$inc: {
+							count: 1
+						}
+					})
+					.then(result => {
+						if (result) return result._id;
+						return Category.create({
+							name: newCategory,
+							count: 1
+						}).then(result => {
+							return result._id;
+						});
+					})
+					.catch(err => {
+						ctx.throw(500, '服务器错误', err);
+					});
+			}
+		});
+		const newCategoriesId = await Promise.all(categoryPromises);
+		console.log('newCategoriesId', newCategoriesId);
+		const categoryUnlinkPromises = categories.map(category => {
+			if (!newCategories.includes(category.name)) {
+				return Category
+					.findByIdAndUpdate(category._id, {
+						$inc: {
+							count: -1
+						}
+					})
+					.catch(err => {
+						ctx.throw(500, '服务器错误', err);
+					});
+			}
+		});
+		await Promise.all(categoryUnlinkPromises);
+
+		await Article
+			.findByIdAndUpdate(id, {
+				title: newTitle,
+				tags: newTagsId,
+				categories: newCategoriesId,
+				url: newUrl
+			})
+			.catch(err => {
+				ctx.throw(500, '服务器错误', err);
+			});
+		ctx.body = 'success';
 	},
 	async getPublishedArticles(ctx, next) {
 		const page = ctx.query.page;
@@ -153,7 +339,6 @@ const articleController = {
 			.populate('tags')
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		const allCount = await Article
 			.count({
@@ -161,13 +346,11 @@ const articleController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		ctx.body = JSON.stringify({
 			allCount: allCount,
 			articles: docs
 		});
-		next();
 	},
 	async getArticlesByCategory(ctx, next) {
 		const page = ctx.query.page;
@@ -182,7 +365,6 @@ const articleController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		const docs = await Article
 			.find({
@@ -198,7 +380,6 @@ const articleController = {
 			.limit(limit)
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		const allCount = await Article
 			.count({
@@ -209,13 +390,11 @@ const articleController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		ctx.body = JSON.stringify({
 			allCount: allCount,
 			articles: docs
 		});
-		next();
 	},
 	async getArticlesByTag(ctx, next) {
 		const page = ctx.query.page;
@@ -230,7 +409,6 @@ const articleController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		const docs = await Article
 			.find({
@@ -246,7 +424,6 @@ const articleController = {
 			.limit(limit)
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		const allCount = await Article
 			.count({
@@ -257,13 +434,11 @@ const articleController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		ctx.body = JSON.stringify({
 			allCount: allCount,
 			articles: docs
 		});
-		next();
 	},
 	async openArticle(ctx, next) {
 		const id = ctx.query.id;
@@ -275,7 +450,6 @@ const articleController = {
 			.populate('categories')
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		const text = fs.readFileSync(doc.url, 'utf8');
 		const html = md.toHtml(text);
@@ -291,7 +465,20 @@ const articleController = {
 				categories: doc.categories
 			}
 		});
-		next();
+	},
+	async getArticleContent(ctx, next) {
+		const id = ctx.query.id;
+		const article = await Article
+			.findById(id)
+			.catch(err => {
+				ctx.throw(500, '服务器错误', err);
+			});
+		const text = fs.readFileSync(article.url, 'utf8');
+		const splits = article.url.split('/');
+		ctx.body = JSON.stringify({
+			filename: splits[splits.length - 1],
+			content: text
+		});
 	},
 	async getAllArticles(ctx, next) {
 		const articles = await Article
@@ -303,10 +490,8 @@ const articleController = {
 			.populate('categories')
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		ctx.body = JSON.stringify(articles);
-		next();
 	},
 	async togglePublish(ctx, next) {
 		console.log(ctx.headers, ctx.header);
@@ -326,7 +511,6 @@ const articleController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
-				next();
 			});
 		const tagPromises = article.tags.map(tag => {
 			return Tag.update({
@@ -338,7 +522,6 @@ const articleController = {
 				})
 				.catch(err => {
 					ctx.throw(500, '服务器错误', err);
-					next();
 				});
 		});
 		const tagsData = await Promise.all(tagPromises);
@@ -352,12 +535,68 @@ const articleController = {
 				})
 				.catch(err => {
 					ctx.throw(500, '服务器错误', err);
-					next();
 				});
 		});
 		const categoriesDate = await Promise.all(categoryPromises);
 		ctx.body = JSON.stringify(article);
-		next();
+	},
+	async deleteArticle(ctx, next) {
+		const {
+			id
+		} = JSON.parse(ctx.request.body);
+		console.log('id:', id);
+		const article = await Article
+			.findOne({
+				_id: id
+			})
+			.catch(err => {
+				ctx.throw(500, '服务器错误', err);
+			});
+		console.log('article:', article);
+		const {
+			categories,
+			tags,
+			url
+		} = article;
+		const categoryPromises = categories.map(categoryId => {
+			return Category
+				.findByIdAndUpdate(categoryId, {
+					$inc: {
+						count: -1
+					}
+				})
+				.catch(err => {
+					ctx.throw(500, '服务器错误', err);
+				});
+		});
+		const newCategories = await Promise.all(categoryPromises);
+
+		const tagPromises = tags.map(tagId => {
+			return Tag
+				.findByIdAndUpdate(tagId, {
+					$inc: {
+						count: -1
+					}
+				})
+				.catch(err => {
+					ctx.throw(500, '服务器错误', err);
+				});
+		});
+		const newTags = await Promise.all(tagPromises);
+
+		try {
+			fs.unlinkSync(url);
+		} catch (err) {
+			ctx.throw(500, '服务器错误', err);
+		}
+		const result = await Article
+			.remove({
+				_id: id
+			})
+			.catch(err => {
+				ctx.throw(500, '服务器错误', err);
+			});
+		ctx.body = 'success';
 	}
 };
 

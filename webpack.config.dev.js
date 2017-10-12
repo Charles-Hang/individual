@@ -43,6 +43,7 @@ module.exports = {
 			test: /\.css$/, //单独处理全局的样式，不使用css-modules
 			include: [
 				path.join(__dirname, "client/src/styleReset/"),
+				path.join(__dirname, "node_modules/simplemde")
 			],
 			loader: "style-loader!css-loader"
 		}, {

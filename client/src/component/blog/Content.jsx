@@ -26,7 +26,7 @@ export default class Content extends Component {
 		});
 		this.content = content;
 		window.eventEmitter.subscribe('content',(data) => {
-			content.innerHTML += data;
+			content.innerHTML += data || `<p class="${styles.null}">无</p>`;
 			window.eventEmitter.dispatch('contentReceived');
 		});
 		window.eventEmitter.subscribe('highlightContent',(id) => {

@@ -5,8 +5,8 @@ showdown.extension('myext', function() {
 	return [{
 		type: 'output',
 		filter: function(text) {
-			const regex = /^<!--.*-->$/gm;
-			const newText = text.replace(regex, '');
+			const msgReg = /^<!--.*-->$/gm;
+			const newText = text.replace(msgReg, '');
 			return newText;
 		}
 	}]
@@ -14,7 +14,8 @@ showdown.extension('myext', function() {
 
 const md = (() => {
 	const converter = new showdown.Converter({
-		extensions: ['myext']
+		extensions: ['myext'],
+		parseImgDimensions: true
 	});
 	return {
 		toHtml(text) {
@@ -23,9 +24,10 @@ const md = (() => {
 		toToc(text) {
 			return toc(text, {
 				slugify: function(str) {
-					const middle = str.toLowerCase();
+					let middle = str.toLowerCase();
+					middle = middle.replace(/\(|\)/g, '');
 					return middle.replace(/\s/g, '-');
-				}
+				},
 			}).content;
 		}
 	}

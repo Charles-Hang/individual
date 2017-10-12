@@ -1,23 +1,25 @@
-.login-box {
+.box {
 	position: absolute;
-    width: 400px;
-    height: 280px;
-    top: 50%;
-    left: 50%;
-    margin-top: -140px;
-    margin-left: -200px;
+	width: 300px;
+	height: 168px;
+	top: 50%;
+	left: 50%;
+	margin-left: -150px;
+	margin-top: -84px;
+	background: #fff;
 }
 
 .title {
-	font-size: 20px;
+	font-size: 18px;
 	text-align: center;
-	line-height: 140px;
+	line-height: 40px;
 	color: #fff;
 	background: linear-gradient(135deg, #18232f,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6,#34495e);
 }
 
 .ipt-box {
 	padding: 10px;
+	height: 128px;
 	border: 1px solid transparent;
 	border-top-width: 0;
     border-image: linear-gradient(135deg, #18232f,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6,#34495e) 0 1 1 1;
@@ -45,28 +47,26 @@
 	border: 0;
 }
 
+.btn-box {
+	margin: 0 auto;
+	width: 160px;
+}
+
 .btn {
-	width: 200px;
-	display: block;
-	height: 30px;
-	background: linear-gradient(135deg,#ababab,#717171 50%,#ababab);
-	background-size: 200%;
-	background-position: 100%;
+	background: #717171;
 	color: #fff;
 	border: 0;
-	margin: 0 auto;
-	outline: none;
+	width: 60px;
+	height: 28px;
+	text-align: center;
+	line-height: 28px;
 	cursor: pointer;
-	transition: all .1s linear;
+	outline: none;
 }
 
-.btn:hover {
-	background-position: 0%;
-}
-
-.warning {
-	position: absolute;
-	color: #e74c3c;
-    right: 5px;
-    bottom: 20px;
+.cancel-btn {
+	background: #fff;
+	color: #717171;
+	margin-left: 40px;
+	border: 1px solid #717171;
 }

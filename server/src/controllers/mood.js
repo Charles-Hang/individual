@@ -9,11 +9,9 @@ const moodController = {
 			date: Date.now()
 		}).catch(err => {
 			ctx.throw(500, '服务器端错误');
-			next();
 		});
 		console.log(mood);
-		ctx.body = 'ok';
-		next();
+		ctx.body = 'success';
 	},
 	async getMood(ctx, next) {
 		const mood = await Mood
@@ -28,11 +26,9 @@ const moodController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误');
-				next();
 			});
 		console.log(mood);
 		ctx.body = mood;
-		next();
 	}
 }
 

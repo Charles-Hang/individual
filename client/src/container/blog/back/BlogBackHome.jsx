@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {Table} from 'antd';
+import {Table,message} from 'antd';
 import utils from '../../../utils/utils.js';
+import VerifyBox from '../../../component/blog/VerifyBox.jsx';
+import BlogEditor from '../../../component/blog/BlogEditor.jsx';
 
 import styles from './blogBackHome.css';
 
@@ -8,10 +10,16 @@ export default class BlogBackHome extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			articles: [],
 			contentType: 'blogList',
-			file: null,
-			fileWarning: '',
 			mood: '',
+			sign: '',
+			showVerifyBox: false,
+			deleteKey: '',
+			editKey: '',
+			editFilename: '',
+			editContent: '',
+			startToEdit: false
 		}
 	}
 
@@ -46,6 +54,7 @@ export default class BlogBackHome extends Component {
 		if(type === 'blogList') {
 			this.getAllArticles()
 				.then(result => {
+					if(!result) return;
 					this.setState({
 						articles: this.transfromArticles(result)
 					});
@@ -54,58 +63,90 @@ export default class BlogBackHome extends Component {
 	}
 
 	getAllArticles() {
-		return fetch('/getAllArticles')
-			.then(response => {
+		return fetch('/getAllArticles',{
+			headers: {
+				'Authorization': sessionStorage.getItem('token')
+			}
+		}).then(response => {
+			console.log(response);
+			if(response.status === 401) {
+				this.props.logout();
+			}else{
 				return response.json();
-			})
+			}
+		})
 	}
 
-	fileChanged(e) {
-		const name = e.target.files[0].name;
-		const span = document.getElementsByClassName('file-name-span')[0];
-		span.innerHTML = name;
-		const extension = name.split('.');
-		if(extension[extension.length - 1] !== 'md'){
-			this.setState({
-				fileWarning: '选择的文件类型有误！'
-			});
-		}else {
-			this.setState({
-				fileWarning: '',
-				file: e.target.files[0]
-			});
-		}
-	}
-
-	sureToPublish() {
-		if(this.state.fileWarning) return;
-		if(!this.state.file) return;
-		const formData = new FormData();
-		formData.append('files',this.state.file);
-		fetch('/publish',{
-			method: 'POST',
-			body: formData
-		}).then(response => {
-			return response;
-		}).then(data => {
-			console.log(data);
-		});
-	}
-
-	textareaChanged(e) {
+	textareaChanged(e, type) {
 		this.setState({
-			mood: e.target.value
+			[type]: e.target.value
 		});
 	}
 
-	sureChangeMood() {
-		fetch('/modifyMood',{
+	sureChangeMoodSign(type) {
+		fetch(`/modify${type}`,{
 			method: 'POST',
-			body: this.state.mood
+			headers: {
+				'Authorization': sessionStorage.getItem('token')
+			},
+			body: this.state[type.toLowerCase()]
 		}).then(response => {
-			return response;
-		}).then(data => {
-			console.log(data);
+			if(response.status === 401) {
+				this.props.logout();
+			}else{
+				return response.text();
+			}
+		}).then(result => {
+			console.log(result);
+			if(result === 'success'){
+				message.success('修改成功！');
+			}
+		});
+	}
+
+	deleteArticle(key) {
+		this.setState({
+			deleteKey: key,
+			showVerifyBox: true
+		});
+	}
+
+	sureToDeleteArticle(username,password) {
+		this.setState({
+			showVerifyBox: false
+		});
+		fetch('/deleteArticle',{
+			method: 'POST',
+			body: JSON.stringify({
+				username,
+				password,
+				id: this.state.deleteKey
+			})
+		}).then(response => {
+			return response.text();
+		}).then(result => {
+			if(result === 'success'){
+				this.deleteArticleInTable();
+			}else {
+				message.warn('用户名或密码有误！');
+			}
+		});
+	}
+
+	deleteArticleInTable() {
+		const articles = this.state.articles;
+		const index = articles.findIndex(article => {
+			return article.key === this.state.deleteKey;
+		});
+		articles.splice(index, 1);
+		this.setState({
+			articles
+		});
+	}
+
+	cancelVerify() {
+		this.setState({
+			showVerifyBox: false
 		});
 	}
 
@@ -120,8 +161,13 @@ export default class BlogBackHome extends Component {
 				id: key
 			})
 		}).then(response => {
-			return response.json();
+			if(response.status === 401) {
+				this.props.logout();
+			}else{
+				return response.json();
+			}
 		}).then(result => {
+			if(!result) return;
 			console.log(result);
 			let articles = this.state.articles;
 			const index = articles.findIndex(article => {
@@ -133,6 +179,90 @@ export default class BlogBackHome extends Component {
 			});
 		});
 	}
+	
+	publish(filename, content) {
+		fetch('/publish',{
+			method: 'POST',
+			headers: {
+				'Authorization': sessionStorage.getItem('token')
+			},
+			body: JSON.stringify({
+				filename,
+				content
+			})
+		}).then(response => {
+			if(response.status === 401) {
+				this.props.logout();
+			}else{
+				return response.text();
+			}
+		}).then(result => {
+			if(result === 'success') {
+				message.success('发布成功！');
+			}
+		});
+	}
+
+	editArticle(key) {
+		fetch(`/getArticleContent?id=${key}`,{
+			headers: {
+				'Authorization': sessionStorage.getItem('token')
+			}
+		}).then(response => {
+			if(response.status === 401) {
+				this.props.logout();
+			}else{
+				return response.json();
+			}
+		}).then(result => {
+			this.setState({
+				editFilename: result.filename,
+				editContent: result.content,
+				editKey: key,
+				startToEdit: true
+			});
+		});
+	}
+
+	cancelEdit() {
+		this.setState({
+			editKey: '',
+			editFilename: '',
+			editContent: '',
+			startToEdit: false
+		});
+	}
+
+	sureToEdit(filename, content) {
+		fetch('/editArticle',{
+			method: 'POST',
+			headers: {
+				'Authorization': sessionStorage.getItem('token')
+			},
+			body: JSON.stringify({
+				id: this.state.editKey,
+				filename,
+				content
+			})
+		}).then(response => {
+			if(response.status === 401) {
+				this.props.logout();
+			}else{
+				return response.text();
+			}
+		}).then(result => {
+			if(result === 'success') {
+				message.success('修改成功！');
+				this.setState({
+					editKey: '',
+					editFilename: '',
+					editContent: '',
+					startToEdit: false
+				});
+			}
+		})
+	}
+
 	render() {
 		const columns = [{
 			title: '标题',
@@ -151,12 +281,23 @@ export default class BlogBackHome extends Component {
 			title: '操作',
 			key: 'operate',
 			render: (text,record,index) => <span>
-				<button className={styles['del-btn']}>删除</button>
+				<button
+					className={styles['del-btn']}
+					onClick={() => {this.deleteArticle(record.key)}}
+				>
+					删除
+				</button>
 				<button
 					className={styles.btn}
 					onClick={() => {this.togglePublish(record.published,record.key)}}
 				>
 					{record.published ? '取消发布' : '发布'}
+				</button>
+				<button
+					className={styles['edit-btn']}
+					onClick={() => {this.editArticle(record.key)}}
+				>
+					编辑
 				</button>
 			</span>
 		}];
@@ -170,39 +311,51 @@ export default class BlogBackHome extends Component {
 				<nav className={styles.nav}>
 					<button data-type="blogList" onClick={(e) => {this.changeType(e)}}>博客列表</button>
 					<button data-type="newBlog" onClick={(e) => {this.changeType(e)}}>发布新博客</button>
-					<button data-type="mood" onClick={(e) => {this.changeType(e)}}>修改心情</button>
+					<button data-type="moodSign" onClick={(e) => {this.changeType(e)}}>修改心情/签名</button>
 				</nav>
-				{this.state.contentType === 'blogList' &&
-					<div className={styles['table-wrapper']}>
-						<Table
-							columns={columns}
-							dataSource={this.state.articles}
-							size="middle"
-							bordered
-							pagination={pagination}
-						/>
-					</div>
-				}
+				{(() => {
+					if(this.state.contentType === 'blogList'){
+						return !this.state.startToEdit ?
+						<div className={styles['table-wrapper']}>
+							<Table
+								columns={columns}
+								dataSource={this.state.articles}
+								size="middle"
+								bordered
+								pagination={pagination}
+							/>
+						</div> :
+						<div>
+							<BlogEditor
+								filename={this.state.editFilename}
+								content={this.state.editContent}
+								publish={this.sureToEdit.bind(this)}
+							/>
+							<div className={styles['cancel-btn-box']}>
+								<button className={styles['cancel-btn']} onClick={() => {this.cancelEdit()}}>取消修改</button>
+							</div>
+						</div>
+					}
+				})()}
 				{this.state.contentType === 'newBlog' &&
-					<div className={styles['new-wrapper']}>
-						<p>
-							<input style={{display: 'none'}} onChange={(e) => {this.fileChanged(e)}} id="blog-upload-ipt" type="file" accept="text/markdown"/>
-							<label htmlFor="blog-upload-ipt" className={styles['upload-ipt']}>选择文件</label>
-						</p>
-						<p>
-							<span className="file-name-span" />
-							<span className={styles['file-warning']}>{this.state.fileWarning}</span>
-						</p>
-						<p>
-							<button onClick={() => {this.sureToPublish()}} className={styles['publish-btn']}>确定发布</button>
-						</p>
+					<BlogEditor publish={this.publish.bind(this)} />
+				}
+				{this.state.contentType === 'moodSign' &&
+					<div className={styles['moodSign-wrapper']}>
+						<div className={styles['mood-box']}>
+							<span>心情</span>
+							<textarea onChange={(e) => {this.textareaChanged(e,'mood')}} wrap="hard"/>
+							<button onClick={() => {this.sureChangeMoodSign('Mood')}}>确认修改</button>
+						</div>
+						<div className={styles['sign-box']}>
+							<span>签名</span>
+							<textarea onChange={(e) => {this.textareaChanged(e,'sign')}} wrap="hard"/>
+							<button onClick={() => {this.sureChangeMoodSign('Sign')}}>确认修改</button>
+						</div>
 					</div>
 				}
-				{this.state.contentType === 'mood' &&
-					<div className={styles['mood-wrapper']}>
-						<textarea onChange={(e) => {this.textareaChanged(e)}} wrap="hard"/>
-						<button onClick={() => {this.sureChangeMood()}}>确认修改</button>
-					</div>
+				{this.state.showVerifyBox === true &&
+					<VerifyBox sure={this.sureToDeleteArticle.bind(this)} cancel={this.cancelVerify.bind(this)}/>
 				}
 			</div>
 		)

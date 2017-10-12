@@ -82,7 +82,7 @@
 	position: relative;
 }
 
-.bar-icon {
+.wrapper .bar-icon {
 	display: none;
 	font-size: 25px;
 	color: #fff;
@@ -92,7 +92,7 @@
 	cursor: pointer;
 }
 
-.mood-icon {
+.wrapper .mood-icon {
 	display: none;
 	font-size: 25px;
 	color: #fff;
@@ -125,7 +125,11 @@
 		display: none;
 	}
 
-	.bar-icon {
+	.content {
+		display: none;
+	}
+
+	.wrapper .bar-icon {
 		display: block;
 	}
 
@@ -133,7 +137,7 @@
 		display: flex;
 	}
 
-	.mood-icon {
+	.wrapper .mood-icon {
 		display: block;
 	}
 

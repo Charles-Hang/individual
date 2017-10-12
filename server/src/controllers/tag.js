@@ -13,10 +13,8 @@ const tagController = {
 			})
 			.catch(err => {
 				ctx.throw(500, '服务器错误');
-				next()
 			});
 		ctx.body = JSON.stringify(tags);
-		next();
 	}
 }
 

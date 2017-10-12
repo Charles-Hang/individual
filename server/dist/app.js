@@ -30,6 +30,10 @@ var _router = require('./router/router.js');
 
 var _router2 = _interopRequireDefault(_router);
 
+var _user = require('./controllers/user.js');
+
+var _user2 = _interopRequireDefault(_user);
+
 var _webpack = require('webpack');
 
 var _webpack2 = _interopRequireDefault(_webpack);
@@ -76,6 +80,8 @@ if (NODE_ENV === 'development') {
 app.use((0, _koaBetterBody2.default)());
 
 app.use(_router2.default.routes(), _router2.default.allowedMethods());
+
+// app.use(UController.initAdmin);
 
 if (NODE_ENV === 'production') {
 	var routerB = require('koa-router')();

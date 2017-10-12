@@ -1,0 +1,27 @@
+.editor-wrapper {
+	width: 90%;
+	margin: 20px auto;
+}
+
+:global(.editor-toolbar) {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+:global(.CodeMirror) {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0; 
+}
+
+.btn {
+	border: 0;
+	outline: none;
+	background: #717171;
+	color: #fff;
+	line-height: 30px;
+	height: 30px;
+	cursor: pointer;
+	margin-left: 20px;
+	padding-left: 10px;
+	padding-right: 10px;
+}

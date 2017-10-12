@@ -2,7 +2,8 @@ var webpack = require('webpack'),
     path = require('path'),
     ExtractTextPlugin = require('extract-text-webpack-plugin'),
     HtmlWebpackPlugin = require('html-webpack-plugin'),
-    UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+    UglifyJSPlugin = require('uglifyjs-webpack-plugin'),
+    CleanWebpackPlugin = require('clean-webpack-plugin');;
 
 var indexHtmlConfig = {
     favicon: path.join(__dirname + '/client/src/static/img/favicon.ico'),
@@ -46,16 +47,21 @@ module.exports = {
             ],
             loader: ExtractTextPlugin.extract({
                 fallback: "style-loader",
-                use: "css-loader?modules&localIdentName=[name]-[local]-[hash:base64:5]"
+                use: [{
+                    loader: "css-loader?modules&localIdentName=[name]-[local]-[hash:base64:5]&minimize",
+                }]
             })
         }, {
             test: /\.css$/,
             include: [
-                path.join(__dirname, "client/src/styleReset/")
+                path.join(__dirname, "client/src/styleReset/"),
+                path.join(__dirname, "node_modules/simplemde")
             ],
             loader: ExtractTextPlugin.extract({
                 fallback: "style-loader",
-                use: "css-loader"
+                use: [{
+                    loader: "css-loader?minimize",
+                }]
             })
         }, {
             test: /\.less$/,
@@ -64,7 +70,7 @@ module.exports = {
             ],
             loader: ExtractTextPlugin.extract({
                 fallback: "style-loader",
-                use: "css-loader!" + `less-loader?{"sourceMap":true}`
+                use: "css-loader?minimize!" + `less-loader?{"sourceMap":true}`
             })
         }, {
             test: /\.(png|jpg)$/,
@@ -72,6 +78,7 @@ module.exports = {
         }]
     },
     plugins: [
+        new CleanWebpackPlugin([path.join(__dirname, '/client/dist')]),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')

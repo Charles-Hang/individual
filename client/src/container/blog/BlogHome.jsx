@@ -14,7 +14,7 @@ export default class BlogHome extends Component {
 			currentPage: '',
 			allPage: '',
 		};
-		this.limit = 5;
+		this.limit = 10;
 		this.changePage = this.changePage.bind(this);
 	}
 

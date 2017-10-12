@@ -1,6 +1,7 @@
 .content {
 	width: 300px;
 	min-height: 350px;
+	max-height: 720px;
 	font-size: 14px;
 	background: #fff;
 	margin-top: 20px;
@@ -44,4 +45,8 @@
 
 .content li:global.active > a {
 	color: #e74c3c;
+}
+
+.null {
+	margin-left: 20px;
 }

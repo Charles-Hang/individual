@@ -13,7 +13,7 @@ export default class BlogArchives extends Component {
 			allPage: '',
 			currentPage: '',
 		};
-		this.limit = 5;
+		this.limit = 10;
 		this.changePage = this.changePage.bind(this);
 	}
 

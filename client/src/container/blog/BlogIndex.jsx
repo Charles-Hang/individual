@@ -10,7 +10,6 @@ import BlogArchives from './BlogArchives.jsx';
 import BlogWatching from './BlogWatching.jsx';
 import Content from '../../component/blog/Content.jsx';
 import Mood from '../../component/blog/Mood.jsx';
-import {Icon} from 'antd';
 import utils from '../../utils/utils.js';
 
 import styles from './blogIndex.css';
@@ -26,6 +25,16 @@ export default class BlogIndex extends Component {
 	}
 
 	componentWillMount() {
+		fetch('/getSign')
+			.then(response => {
+				console.log(response)
+				return response.text();
+			})
+			.then(result => {
+				this.setState({
+					sign: result
+				});
+			});
 		window.eventEmitter = {
 		    _events: {},
 		    dispatch: function (event, data = '', callback = '') {
@@ -89,15 +98,14 @@ export default class BlogIndex extends Component {
 	        		<div className={styles.nav}>
 						<div className={styles['visiting-card']}>
 							<h1><Link to="/blog/back" style={{cursor: 'default'}}>一首歌时间</Link></h1>
-							<p>是要两分，还是三分</p>
+							<p>{this.state.sign}</p>
 						</div>
-						<Icon type="bars" className={styles['bar-icon']} onClick={(e) => {this.handleItems(e)}}/>
+						<i className={`${styles['bar-icon']} iconfont icon-shangpinfenlei01`} onClick={(e) => {this.handleItems(e)}}/>
 						<Route path={this.props.match.path} render={(props) => {
 							const pathReg = /^\/blog\/\d+\/\d+\/\d+\/\S+$/;
 							if(!pathReg.test(props.location.pathname)) {
-								return <Icon
-									type="coffee"
-									className={styles['mood-icon']}
+								return <i
+									className={`${styles['mood-icon']} iconfont icon-161coffee`}
 									onClick={(e) => {this.handleMood(e)}}
 								/>
 							}else {
@@ -107,23 +115,23 @@ export default class BlogIndex extends Component {
 						<ul className={styles['item-box']}>
 							<li className={this.props.location.pathname === '/blog' ? 'active' : ''}>
 								<Link to="/blog">
-									<Icon type="home" style={{ fontSize: 16, color: '#e74c3c', marginRight: '10px'}} />
+									<i className="iconfont icon-home" style={{ fontSize: 16, color: '#e74c3c', marginRight: '10px'}} />
 									首页
 									<i className={`${styles['active-dot']} ${styles.dot1}`}/>
 								</Link>
 							</li>
 							<li className={this.pathIn(this.props.location.pathname,'categories') ? 'active' : ''}>
 								<Link to="/blog/categories">
-									<Icon type="appstore-o" style={{ fontSize: 14, color: '#f0ad4e', marginRight: '10px'}} />
+									<i className="iconfont icon-viewgallery" style={{ fontSize: 15, color: '#f0ad4e', marginRight: '10px'}} />
 									分类
 									<i className={`${styles['active-dot']} ${styles.dot2}`}/>
 								</Link>
 							</li>
 							<li className={this.pathIn(this.props.location.pathname, 'tags') ? 'active' : ''}>
 								<Link to="/blog/tags">
-									<Icon
-										type="tags-o"
-										style={{ fontSize: 16, color: '#1abc9c', marginRight: '10px',verticalAlign: '-1px'}}
+									<i
+										className="iconfont icon-discount"
+										style={{ fontSize: 15, color: '#1abc9c', marginRight: '10px',verticalAlign: '-1px'}}
 									/>
 									标签
 									<i className={`${styles['active-dot']} ${styles.dot3}`}/>
@@ -131,8 +139,8 @@ export default class BlogIndex extends Component {
 							</li>
 							<li className={this.pathIn(this.props.location.pathname,'archives') ? 'active' : ''}>
 								<Link to="/blog/archives">
-									<Icon
-										type="inbox"
+									<i
+										className="iconfont icon-box"
 										style={{ fontSize: 16, color: '#5bc0de', marginRight: '10px', verticalAlign: '-1px'}}
 									/>
 									归档
@@ -143,7 +151,7 @@ export default class BlogIndex extends Component {
 						<Route path={this.props.match.path} render={(props) => {
 							const pathReg = /^\/blog\/\d+\/\d+\/\d+\/\S+$/;
 							if(pathReg.test(props.location.pathname)) {
-								return <div >
+								return <div className={styles.content}>
 									<Content />
 								</div>
 							}else{
@@ -165,7 +173,7 @@ export default class BlogIndex extends Component {
 	        		</div>
 	        	</div>
 	        	<span className={styles['to-top-btn']} onClick={() => {this.scrollToTop()}}>
-	        		<Icon type="to-top" />
+	        		<i className="iconfont icon-top"/>
 	        	</span>
         	</div>
         ) 
