@@ -97,7 +97,7 @@ export default class Content extends Component {
 			});
 		}
 		
-		const header = document.getElementById(e.target.hash.slice(1));
+		const header = document.getElementById(decodeURI(e.target.hash).slice(1));
 		let offsetHeader = header;
 		let scrollTop = offsetHeader.offsetTop;
 		while(offsetHeader.offsetParent) {

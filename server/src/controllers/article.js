@@ -356,7 +356,6 @@ const articleController = {
 		const page = parseInt(ctx.query.page);
 		const limit = parseInt(ctx.query.limit);
 		const category = decodeURI(ctx.query.category);
-		console.log(category, page, limit, '`````````````````');
 		const categoryId = await Category
 			.findOne({
 				name: category
@@ -495,11 +494,9 @@ const articleController = {
 		ctx.body = JSON.stringify(articles);
 	},
 	async togglePublish(ctx, next) {
-		console.log(ctx.headers, ctx.header);
 		const body = JSON.parse(ctx.request.body);
 		const publish = body.publish;
 		const id = body.id;
-		console.log(publish, id, body);
 		const article = await Article
 			.findOneAndUpdate({
 				_id: id
@@ -545,7 +542,6 @@ const articleController = {
 		const {
 			id
 		} = JSON.parse(ctx.request.body);
-		console.log('id:', id);
 		const article = await Article
 			.findOne({
 				_id: id
@@ -553,7 +549,6 @@ const articleController = {
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
 			});
-		console.log('article:', article);
 		const {
 			categories,
 			tags,

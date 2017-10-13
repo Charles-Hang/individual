@@ -27,7 +27,6 @@ const moodController = {
 			.catch(err => {
 				ctx.throw(500, '服务器错误');
 			});
-		console.log(mood);
 		ctx.body = mood;
 	}
 }

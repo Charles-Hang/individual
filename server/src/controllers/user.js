@@ -6,7 +6,6 @@ const userController = {
 		const body = JSON.parse(ctx.request.body);
 		const username = body.username;
 		const password = body.password;
-		console.log(username, password);
 		const doc = await User
 			.find({
 				username,
@@ -15,7 +14,6 @@ const userController = {
 			.catch(err => {
 				ctx.throw(500, '服务器错误', err);
 			});
-		console.log(doc);
 		if (!doc.length) {
 			ctx.body = JSON.stringify({
 				result: '用户名或密码有误！',
