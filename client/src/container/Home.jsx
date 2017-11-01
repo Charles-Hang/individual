@@ -52,6 +52,7 @@ export default class Home extends Component {
 	
 	componentDidMount() {
 		console.log(window.document.readyState);
+		document.title = '午星的个人主页';
 		if(window.document.readyState !== 'complete') {
 			window.onload = () => {
 				const items = document.getElementsByClassName(styles.item);

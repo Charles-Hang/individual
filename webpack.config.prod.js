@@ -31,7 +31,7 @@ module.exports = {
         path: path.join(__dirname, '/client/dist'),
         filename: 'js/[name].[chunkhash:5].js',
         chunkFilename: 'js/[name].[chunkhash:5].js',
-        publicPath: '/'
+        publicPath: 'https://static.noonstar.cn/'
     },
     module: {
         // 加载器配置
@@ -93,7 +93,7 @@ module.exports = {
             name: 'runtime'
         }),
         new HtmlWebpackPlugin(indexHtmlConfig),
-        new ExtractTextPlugin("css/index.[hash:5].css"),
+        new ExtractTextPlugin("css/index.[chunkhash:5].css"),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new UglifyJSPlugin({
             parallel: true,

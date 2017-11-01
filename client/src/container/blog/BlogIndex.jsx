@@ -56,6 +56,7 @@ export default class BlogIndex extends Component {
 	}
 
 	componentDidMount() {
+		document.title = '午星的博客';
 		this.toTopBtn = document.getElementsByClassName(styles['to-top-btn'])[0];
 		window.addEventListener('scroll',this.scrollHandling);
 	}
