@@ -35,7 +35,9 @@ if (NODE_ENV === 'development') {
 	}));
 	app.use(hotMiddleware(compile));
 } else {
-	app.use(require('koa-static')(path.join(__dirname, '../../client/dist')));
+	app.use(require('koa-static')(path.join(__dirname, '../../client/dist'), {
+		maxage: 180 * 24 * 60 * 60 * 1000
+	}));
 
 	app.use(views(path.join(__dirname, '../../client/dist'), {
 		extension: 'html'
@@ -62,4 +64,4 @@ app.on('error', (err, ctx) => {
 	}
 });
 
-app.listen(4000);
+app.listen(3000);

@@ -70,7 +70,9 @@ if (NODE_ENV === 'development') {
 	}));
 	app.use((0, _koaWebpackMiddleware.hotMiddleware)(compile));
 } else {
-	app.use(require('koa-static')(_path2.default.join(__dirname, '../../client/dist')));
+	app.use(require('koa-static')(_path2.default.join(__dirname, '../../client/dist'), {
+		maxage: 180 * 24 * 60 * 60 * 1000
+	}));
 
 	app.use((0, _koaViews2.default)(_path2.default.join(__dirname, '../../client/dist'), {
 		extension: 'html'
