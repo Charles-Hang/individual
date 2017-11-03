@@ -1,0 +1,21 @@
+.type-card {
+	height: 60px;
+	min-width: 100px;
+	text-align: center;
+	line-height: 40px;
+	font-size: 14px;
+	background: #f5f7f9;
+	margin: 10px;
+	cursor: pointer;
+}
+
+.type-card a {
+	display: block;
+	padding: 10px;
+	transition: none;
+}
+
+.type-card:hover {
+	color: #fff;
+	background-image: linear-gradient(168deg,#e74c3c,#f0ad4e,#1abc9c,#5bc0de,#9b59b6);
+}
