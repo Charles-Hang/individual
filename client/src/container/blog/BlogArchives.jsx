@@ -30,8 +30,8 @@ export default class BlogArchives extends Component {
       const urlArr = article.url.split('/');
       const date = new Date(article.birthTime);
       const { _id: id } = article;
-      if (date.getFullYear() !== year) {
-        year = date.getFullYear();
+      if (date.getFullYear().toString() !== year) {
+        year = date.getFullYear().toString();
         result.push({
           id: id + year,
           type: 'large',
