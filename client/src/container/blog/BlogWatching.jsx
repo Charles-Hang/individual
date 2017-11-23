@@ -73,7 +73,9 @@ export default class BlogWatching extends Component {
   }
 
   findHighLight() {
-    const { scrollTop } = document.documentElement;
+    const scrollTop = document.documentElement.scrollTop ||
+      window.pageYOffset ||
+      document.body.scrollTop;
     const nextIndex = this.state.headers.findIndex((h) => {
       let header = h;
       let headerTop = header.offsetTop;

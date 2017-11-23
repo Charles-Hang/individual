@@ -192,6 +192,7 @@
 
 .to-top-btn {
 	position: fixed;
+	outline: none;
 	bottom: -30px;
 	left: 50%;
 	margin-left: calc((100vw - 100%) / 2 - 330px);

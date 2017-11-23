@@ -81,7 +81,9 @@ export default class BlogIndex extends Component {
   }
 
   scrollHandling() {
-    const { scrollTop } = document.documentElement;
+    const scrollTop = document.documentElement.scrollTop ||
+      window.pageYOffset ||
+      document.body.scrollTop;
     if (scrollTop >= 371) {
       this.toTopBtn.classList.add('active');
     } else {

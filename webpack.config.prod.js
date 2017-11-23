@@ -4,6 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 const indexHtmlConfig = {
   favicon: path.join(__dirname, '/client/src/static/img/favicon.ico'),
@@ -96,6 +97,10 @@ module.exports = {
       name: 'runtime',
     }),
     new HtmlWebpackPlugin(indexHtmlConfig),
+    new PreloadWebpackPlugin({
+      rel: 'preload',
+      include: ['main', 'vendor', 'runtime', 'index'],
+    }),
     new ExtractTextPlugin('css/index.[chunkhash:5].css'),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new UglifyJSPlugin({

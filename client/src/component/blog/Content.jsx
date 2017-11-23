@@ -30,13 +30,14 @@ export default class Content extends Component {
 
   componentDidMount() {
     const content = document.getElementsByClassName(styles.content)[0];
-    let contentTop = 0;
-    let target = content;
-    while (target) {
-      contentTop += target.offsetTop;
-      target = target.offsetParent;
-    }
-    this.contentTop = contentTop;
+    // let contentTop = 0;
+    // let target = content;
+    // while (target) {
+    //   contentTop += target.offsetTop;
+    //   target = target.offsetParent;
+    // }
+    // console.log(contentTop);
+    this.contentTop = 371; // 目录框的offsettop
     this.content = content;
     window.eventEmitter.subscribe('content', (data) => {
       content.innerHTML += data || `<p class="${styles.null}">无</p>`;
@@ -71,7 +72,10 @@ export default class Content extends Component {
 
   contentPosition() {
     if (window.innerWidth < 1200) return;
-    const docScrollTop = document.documentElement.scrollTop;
+    const docScrollTop = document.documentElement.scrollTop ||
+      window.pageYOffset ||
+      document.body.scrollTop;
+    console.log(docScrollTop);
     if (this.contentTop <= docScrollTop) {
       this.content.style.position = 'fixed';
       this.content.style.top = '0';
