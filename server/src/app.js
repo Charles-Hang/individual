@@ -46,8 +46,6 @@ app.use(body());
 
 app.use(router.routes(), router.allowedMethods());
 
-// app.use(UController.initAdmin);
-
 if (NODE_ENV === 'production') {
   const routerB = require('koa-router')();
   routerB.get('/*', async (ctx) => {

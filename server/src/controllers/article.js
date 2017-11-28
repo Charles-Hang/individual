@@ -53,13 +53,13 @@ const articleController = {
 				}
 			}
 		});
-		const rlEnd = await new Promise(resolve => {
-			rl.on('close', () => {
-				resolve();
-			});
-		}).catch(err => {
-			console.log('await rlEnd err', err);
-		});
+		// const rlEnd = await new Promise(resolve => {
+		// 	rl.on('close', () => {
+		// 		resolve();
+		// 	});
+		// }).catch(err => {
+		// 	console.log('await rlEnd err', err);
+		// });
 		console.log('info', info)
 
 		let tags,

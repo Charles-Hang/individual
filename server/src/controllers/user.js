@@ -65,29 +65,6 @@ const userController = {
 			ctx.body = '用户名或密码有误！';
 		}
 	},
-
-	async initAdmin(ctx, next) {
-		const userCount = await User
-			.count()
-			.catch(err => {
-				ctx.throw(500, '服务器错误')
-			});
-		console.log(userCount);
-		if (userCount === 0) {
-			const user = await User
-				.create({
-					username: 'hswxing',
-					password: 'grzy0926'
-				})
-				.catch(err => {
-					ctx.throw(500, '服务器错误', err);
-				});
-			console.log(user);
-			ctx.body = 'init admin successfully';
-		} else {
-			ctx.body = 'admin is already init';
-		}
-	}
 };
 
 export default userController;

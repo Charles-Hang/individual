@@ -75,7 +75,6 @@ export default class Content extends Component {
     const docScrollTop = document.documentElement.scrollTop ||
       window.pageYOffset ||
       document.body.scrollTop;
-    console.log(docScrollTop);
     if (this.contentTop <= docScrollTop) {
       this.content.style.position = 'fixed';
       this.content.style.top = '0';
