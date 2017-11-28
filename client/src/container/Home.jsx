@@ -254,7 +254,7 @@ export default class Home extends Component {
         <div className={styles.menu}>
           <p className={styles.title}>午星的个人主页</p>
           <div className={`${styles.item} ${styles.item1}`}>
-            <Link href to="/blog" style={{ display: 'block' }}>个人博客</Link>
+            <Link href to="/blog" style={{ display: 'block' }}>博客</Link>
           </div>
           <div className={`${styles.item} ${styles.item2}`}>
             <Link href to="/project" style={{ display: 'block' }}>待定</Link>

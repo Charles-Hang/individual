@@ -1,11 +1,11 @@
 .menu {
 	position: fixed;
 	width: 450px;
-	height: 320px;
+	height: 280px;
 	top: 50%;
 	left: 50%;
 	margin-left: -225px;
-	margin-top: -160px;
+	margin-top: -140px;
 	color: #fff;
 	font-size: 20px;
 }
@@ -13,8 +13,8 @@
 .title {
 	opacity: 0;
 	text-align: center;
-	line-height: 100px;
-	height: 100px;
+	line-height: 60px;
+	height: 60px;
 	background: #616161;
 	border-top-right-radius: 10px;
 	border-top-left-radius: 10px;
@@ -45,18 +45,18 @@
 	background-position: 100%;
 	border-bottom-left-radius: 10px;
 	transform: translate3d(-230px,220px,0) rotate(45deg);
-}
-
-.item1:hover {
-	background-position: 0%;
-	box-shadow: 0 0 3px #64829f;
-	transition: all .3s linear;
+	transition: all .1s linear;
 }
 
 .item1:global.back {
 	opacity: 1;
 	transform: translate3d(0,0,0) rotate(0deg);
-	transition: all .3s linear;
+	transition: transform .3s linear;
+}
+
+.item1:hover {
+	background-position: 0%;
+	transition: all .1s linear;
 }
 
 .item2 {
@@ -65,19 +65,20 @@
 	background-position: 100%;
 	border-bottom-right-radius: 10px;
 	transform: translate3d(320px,-31px,0) rotate(-20deg);
-}
-
-.item2:hover {
-	background-position: 0%;
-	box-shadow: 0 0 3px #64829f;
-	transition: all .3s linear;
+	transition: all .1s linear;
 }
 
 .item2:global.back {
 	opacity: 1;
 	transform: translate3d(0,0,0) rotate(0deg);
-	transition: all .3s linear;
+	transition: transform .3s linear;
 }
+
+.item2:hover {
+	background-position: 0%;
+	transition: all .1s linear;
+}
+
 /*'#18232f','#1abc9c','#9b59b6','#5bc0de','#f0ad4e','#e74c3c','#34495e'*/
 .home-canvas {
 	position: absolute;
