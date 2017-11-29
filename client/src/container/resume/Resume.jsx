@@ -17,7 +17,7 @@ const Resume = () => (
         QQ：465851044
       </span>
     </p>
-    <h2 id="教育背景">教育背景</h2>
+    <h2 id="教育经历">教育经历</h2>
     <ul>
       <li>2011-2015年<span className={styles.school}>大连理工大学</span><span className={styles.major}>集成电路本科</span></li>
       <li>2015-2016年<span className={styles.school}>大连理工大学</span><span className={styles.major}>英语双学位</span></li>
@@ -54,7 +54,7 @@ const Resume = () => (
     </p>
     <h3 id="技能情况">技能情况</h3>
     <p>
-      掌握HTML、CSS、Webpack的使用，熟悉React、JS(ES6/ES7)，使用Linux、Git开发与管理
+      掌握HTML、CSS、Webpack，熟悉React、JS(ES6/ES7)，使用Linux、Git开发与管理
       <br />
       善于借助开源社区解决遇到的技术问题
       <br />

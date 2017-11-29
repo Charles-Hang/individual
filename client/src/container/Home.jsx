@@ -7,12 +7,13 @@ class Circle {
   constructor(x, y) {
     this.x = x; // 圆x坐标
     this.y = y; // 圆y坐标
-    this.r = (Math.random() * (5 - 2)) + 2; // 圆半径r
-    this.sx = (Math.random() * 2) - 1; // 圆x方向速度
-    this.sy = (Math.random() * 2) - 1; // 圆y方向速度
+    this.r = (Math.random() * (8 - 2)) + 2; // 圆半径r
+    this.sx = (Math.random() * 1.5) - 1; // 圆x方向速度
+    this.sy = (Math.random() * 1.5) - 1; // 圆y方向速度
     this.colors = ['#18232f', '#1abc9c', '#9b59b6', '#5bc0de', '#f0ad4e', '#e74c3c', '#34495e']; // 颜色池
     this.color = this.colors[Math.round(Math.random() * 6)]; // 从颜色池中选取圆的颜色
     this.mass = this.r;
+    this.ratio = window.devicePixelRatio || 1;
   }
 
   addSpeed(speedx = 0, speedy = 0) {
@@ -23,7 +24,7 @@ class Circle {
   drawCircle(ctx, mouse) {
     if (mouse.x) {
       const d = Math.sqrt(((this.x - mouse.x) ** 2) + ((this.y - mouse.y) ** 2));
-      if (d < 150) {
+      if (d < (150 * this.ratio)) {
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
@@ -44,15 +45,15 @@ class Circle {
 
   drawLines(ctx, circle, mouse) {
     const cd = Math.sqrt(((this.x - circle.x) ** 2) + ((this.y - circle.y) ** 2));
-    if (mouse.x && cd < 170) {
+    if (mouse.x && cd < (170 * this.ratio)) {
       const md = Math.sqrt(((this.x - mouse.x) ** 2) + ((this.y - mouse.y) ** 2));
       const cmd = Math.sqrt(((mouse.x - circle.x) ** 2) + ((mouse.y - circle.y) ** 2));
-      if (md < 150 && cmd < 150) {
+      if (md < (150 * this.ratio) && cmd < (150 * this.ratio)) {
         const lingrad = ctx.createLinearGradient(this.x, this.y, circle.x, circle.y);
         lingrad.addColorStop(0, this.color);
         lingrad.addColorStop(1, circle.color);
         ctx.strokeStyle = lingrad;
-      } else if (md < 150 && cmd > 150) {
+      } else if (md < (150 * this.ratio) && cmd > (150 * this.ratio)) {
         const lingrad = ctx.createLinearGradient(this.x, this.y, circle.x, circle.y);
         lingrad.addColorStop(0, this.color);
         lingrad.addColorStop(1, '#f4f4f4');
@@ -64,7 +65,7 @@ class Circle {
       ctx.moveTo(this.x, this.y);
       ctx.lineTo(circle.x, circle.y);
       ctx.stroke();
-    } else if (cd < 170) {
+    } else if (cd < (170 * this.ratio)) {
       ctx.strokeStyle = '#f4f4f4';
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
@@ -89,6 +90,7 @@ class GravityPoint {
     this.x = null;
     this.y = null;
     this.mass = 200;
+    this.ratio = window.devicePixelRatio || 1;
 
     this.gravitate = this.gravitate.bind(this);
     this.antiGravitate = this.antiGravitate.bind(this);
@@ -96,9 +98,9 @@ class GravityPoint {
 
   startCapture(circle) {
     const d = Math.sqrt(((this.x - circle.x) ** 2) + ((this.y - circle.y) ** 2));
-    if (d > 80 && d < 150) {
+    if (d > (80 * this.ratio) && d < (150 * this.ratio)) {
       this.gravitate(circle);
-    } else if (d <= 80) {
+    } else if (d <= (80 * this.ratio)) {
       this.antiGravitate(circle);
     }
   }
@@ -119,7 +121,7 @@ class GravityPoint {
     const dx = this.x - circle.x;
     const dy = this.y - circle.y;
     const dq = (dx * dx) + (dy * dy);
-    const d = Math.abs(Math.sqrt(dq) - 150);
+    const d = Math.abs(Math.sqrt(dq) - (150 * this.ratio));
     const F = -(this.mass * circle.mass) / (d * d);
 
     const ax = (F * dx) / d;
@@ -150,8 +152,9 @@ export default class Home extends Component {
     }
     const canvas = document.getElementById('home-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
     let w = canvas.width;
     let h = canvas.height;
     const circlesStack = (() => {
@@ -171,12 +174,12 @@ export default class Home extends Component {
         },
       };
     })();
-    let circlesCounts = w >= 1600 ? 70 : 60; // 圆点应有数目
+    let circlesCounts = w >= 1600 ? 80 : 60; // 圆点应有数目
     let circlesLength = circlesCounts; // 圆点实际数目
     const mouse = new GravityPoint();
     canvas.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      mouse.x = e.clientX * ratio;
+      mouse.y = e.clientY * ratio;
     });
     canvas.addEventListener('mouseout', () => {
       mouse.x = null;
@@ -188,8 +191,8 @@ export default class Home extends Component {
     this.draw(ctx, circlesStack, mouse, w, h);
 
     window.onresize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
       w = canvas.width;
       h = canvas.height;
       circlesCounts = w >= 1600 ? 70 : 60;
@@ -257,7 +260,7 @@ export default class Home extends Component {
             <Link href to="/blog" style={{ display: 'block' }}>博客</Link>
           </div>
           <div className={`${styles.item} ${styles.item2}`}>
-            <Link href to="/project" style={{ display: 'block' }}>待定</Link>
+            <Link href to="/resume" style={{ display: 'block' }}>简历</Link>
           </div>
         </div>
       </div>
