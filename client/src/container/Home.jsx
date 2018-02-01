@@ -260,7 +260,7 @@ export default class Home extends Component {
             <Link href to="/blog" style={{ display: 'block' }}>博客</Link>
           </div>
           <div className={`${styles.item} ${styles.item2}`}>
-            <Link href to="/resume" style={{ display: 'block' }}>简历</Link>
+            <Link href to="/project" style={{ display: 'block' }}>待定</Link>
           </div>
         </div>
       </div>
