@@ -8,7 +8,7 @@ const Resume = () => (
     <h3 id="求职意向：前端工程师">求职意向：前端工程师</h3>
     <p className={styles.contact}>
       <span>
-        手机:18698611893
+        手机：18698611893
       </span>
       <span>
         邮箱：hswxing@hotmail.com
@@ -53,7 +53,7 @@ const Resume = () => (
       收获：提高了分析解决问题的能力，锻炼了快速学习的能力
     </p>
     <h2 id="个人项目与技能">个人项目与技能</h2>
-    <h3 id="个人博客站-httpswwwnoonstarcn">个人博客站 <a href="https://www.noonstar.cn">https://www.noonstar.cn</a></h3>
+    <h3 id="个人博客站-httpswwwnoonstarcn">个人博客站 <a href="https://www.noonstar.cn">www.noonstar.cn</a></h3>
     <p>
       从零自己搭建项目，从开发到部署再优化，采用React、Webpack、Koa、MongoDB技术栈，打通了前后台的开发，实现了博客的展示，发布，编辑等功能
       <br />
