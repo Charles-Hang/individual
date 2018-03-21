@@ -63,7 +63,7 @@ const Resume = () => (
     </p>
     <h3 id="技能情况">技能情况</h3>
     <p>
-      掌握HTML、CSS、Webpack，熟悉JS(ES6/ES7)、React，使用Linux、Git开发与管理
+      熟练掌握JS(ES6/ES7)、React、CSS、Webpack、HTML，使用Linux、Git开发与管理
       <br />
       善于借助开源社区解决遇到的技术问题
       <br />
